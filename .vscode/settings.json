@@ -1,0 +1,15 @@
+{
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "g:\\Users\\Henry\\Desktop\\Course\\OOP\\output",
+			"binaryPath": "g:\\Users\\Henry\\Desktop\\Course\\OOP\\output\\main.exe",
+			"binaryArgs": []
+		}
+	],
+	"files.associations": {
+		"ostream": "cpp",
+		"chrono": "cpp"
+	},
+	"C_Cpp.errorSquiggles": "enabled",
+	"C_Cpp.intelliSenseEngineFallback": "enabled"
+}
