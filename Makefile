@@ -65,6 +65,7 @@ OBJECTS		:= $(SOURCES:.cpp=.o)
 OUTPUTMAIN	:= $(call FIXPATH,$(OUTPUT)/$(MAIN))
 
 all: $(OUTPUT) $(MAIN)
+
 	@echo $(CXX) $(INCLUDES) $(LIBS) -o $(OUTPUTMAIN) $(OBJECTS) $(CXXFLAGS) $(LFLAGS) 
 	@echo Executing 'all' complete!
 
@@ -79,6 +80,7 @@ $(MAIN): $(OBJECTS)
 # the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
 # (see the gnu make manual section about automatic variables)
 .cpp.o:
+	@echo $(CXX) $(INCLUDES) $(LIBS) -c $<  -o $@ $(CXXFLAGS)
 	$(CXX) $(INCLUDES) $(LIBS) -c $<  -o $@ $(CXXFLAGS)
 
 .PHONY: clean
@@ -86,6 +88,11 @@ clean:
 	$(RM) $(OUTPUTMAIN)
 	$(RM) $(call FIXPATH,$(OBJECTS))
 	@echo Cleanup complete!
+
+.PHONY: rebuild
+rebuild:
+	$(MAKE) clean
+	$(MAKE) all
 
 run: all
 	./$(OUTPUTMAIN)

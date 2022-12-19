@@ -1,7 +1,7 @@
 #include <iostream>
 
-int main(int argc, char const *argv[])
-{
-    std::cout << "hello world!" << std::endl;
+#include "header/Game.h"
+int main(int argv, char** args) {
+    Game* game = new Game();
     return 0;
 }
