@@ -8,6 +8,7 @@
 #include "../engine/AssetManager.h"
 #include "../engine/TextureManager.h"
 
+class AssetManager;
 enum class GameState {
     PLAY,
     EXIT
@@ -26,10 +27,17 @@ class Game {
     GameState _gameState;
 
    public:
-    SDL_Rect camera = {0, 0, 800, 640};
     SDL_Window* _window;
     static AssetManager* assets;
     static SDL_Renderer* _renderer;
+    static SDL_Rect camera;
+    int FPS = 60;
+    int frameDelay = 1000 / FPS;
+
+    enum groupLabels : std::size_t {
+        groupMap,
+        groupPlayers,
+    };
     Game();
     ~Game();
 

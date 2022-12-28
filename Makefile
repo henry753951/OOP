@@ -37,6 +37,7 @@ MD	:= mkdir
 else
 MAIN	:= main
 SOURCEDIRS	:= $(shell find $(SRC) -type d)
+SUBDIRS := $(wildcard */.)
 INCLUDEDIRS	:= $(shell find $(INCLUDE) -type d)
 LIBDIRS		:= $(shell find $(LIB) -type d)
 FIXPATH = $1
@@ -51,7 +52,7 @@ INCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 LIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
 # define the C source files
-SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS)))
+SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS))) $(wildcard $(SRC)/engine/*.cpp) $(wildcard $(SRC)/engine/ECS/*.cpp)
 
 # define the C object files 
 OBJECTS		:= $(SOURCES:.cpp=.o)
@@ -65,13 +66,11 @@ OBJECTS		:= $(SOURCES:.cpp=.o)
 OUTPUTMAIN	:= $(call FIXPATH,$(OUTPUT)/$(MAIN))
 
 all: $(OUTPUT) $(MAIN)
-
 	@echo $(CXX) $(INCLUDES) $(LIBS) -o $(OUTPUTMAIN) $(OBJECTS) $(CXXFLAGS) $(LFLAGS) 
 	@echo Executing 'all' complete!
 
 $(OUTPUT):
 	$(MD) $(OUTPUT)
-
 $(MAIN): $(OBJECTS) 
 	$(CXX) $(INCLUDES) $(LIBS) -o $(OUTPUTMAIN) $(OBJECTS) $(CXXFLAGS) $(LFLAGS) 
 
@@ -91,6 +90,7 @@ clean:
 
 .PHONY: rebuild
 rebuild:
+	@echo $(SOURCES)
 	$(MAKE) clean
 	$(MAKE) all
 

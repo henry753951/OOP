@@ -45,7 +45,14 @@
 		"bitset": "cpp",
 		"deque": "cpp",
 		"fstream": "cpp",
-		"string_view": "cpp"
+		"string_view": "cpp",
+		"map": "cpp",
+		"atomic": "cpp",
+		"cstdarg": "cpp",
+		"cstddef": "cpp",
+		"memory_resource": "cpp",
+		"string": "cpp",
+		"cinttypes": "cpp"
 	},
 	"C_Cpp.errorSquiggles": "enabled",
 	"C_Cpp.intelliSenseEngineFallback": "enabled",
