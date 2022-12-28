@@ -9,6 +9,7 @@
 #include "../engine/TextureManager.h"
 
 class AssetManager;
+class ColliderComponent;
 enum class GameState {
     PLAY,
     EXIT
@@ -31,12 +32,15 @@ class Game {
     static AssetManager* assets;
     static SDL_Renderer* _renderer;
     static SDL_Rect camera;
+    static bool isRunning;
+    static SDL_Event event;
     int FPS = 60;
     int frameDelay = 1000 / FPS;
 
     enum groupLabels : std::size_t {
         groupMap,
         groupPlayers,
+        groupColliders,
     };
     Game();
     ~Game();

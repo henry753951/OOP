@@ -4,4 +4,4 @@ screenWidth=1600
 
 [Display]
 # 0 視窗 1 無邊框 2 全螢幕 
-windowMode=0
+windowMode=1

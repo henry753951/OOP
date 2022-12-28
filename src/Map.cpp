@@ -30,24 +30,23 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY) {
             mapFile.get(c);
             srcX = atoi(&c) * tileSize;
             AddTile(srcX, srcY, x * scaledSize, y * scaledSize);
-            cout << x << " " << y << endl;
             mapFile.ignore();
         }
     }
 
     mapFile.ignore();
 
-    // for (int y = 0; y < sizeY; y++) {
-    //     for (int x = 0; x < sizeX; x++) {
-    //         mapFile.get(c);
-    //         if (c == '1') {
-    //             auto& tcol(manager.addEntity());
-    //             tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, scaledSize);
-    //             tcol.addGroup(Game::groupColliders);
-    //         }
-    //         mapFile.ignore();
-    //     }
-    // }
+    for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            mapFile.get(c);
+            if (c == '1') {
+                auto& tcol(manager.addEntity());
+                tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 0);
+                tcol.addGroup(Game::groupColliders);
+            }
+            mapFile.ignore();
+        }
+    }
 
     mapFile.close();
 }

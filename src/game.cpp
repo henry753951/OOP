@@ -1,8 +1,10 @@
 #include "header/Game.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "engine/AssetManager.h"
+#include "engine/Collision.h"
 #include "engine/Components.h"
 #include "engine/Vector2D.h"
 #include "header/Configuration.h"
@@ -15,11 +17,14 @@ SDL_Rect Game::camera = {0, 0, 1600, 900};
 Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::_renderer = nullptr;
+SDL_Event Game::event;
+bool Game::isRunning = false;
 
 auto& player(manager.addEntity());
 auto& label(manager.addEntity());
 auto& tiles(manager.getGroup(Game::groupMap));
-
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
 /**
  *  遊戲建構子
  *  載入設定檔、讀入物件內
@@ -80,16 +85,23 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) std::cerr << "Error: Failed at SDL_Init()" << endl;
     _window = SDL_CreateWindow(title, x, y, w, h, flags);
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
-
+    isRunning = true;
     if (_renderer) {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
     assets->AddTexture("terrain", "Assets/Texture/ground.png");
+    assets->AddTexture("player", "assets/jett_anims.png");
 
     map = new Map("terrain", 3, 32);
     map->LoadMap("Assets/map.map", 25, 20);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
+
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 128, 128, 1);
+    player.addComponent<SpriteComponent>("player", true);
+    player.addComponent<KeyboardController>();
+    player.addComponent<ColliderComponent>("player");
+    player.addGroup(groupPlayers);
 }
 
 Uint32 frameStart;
@@ -111,23 +123,56 @@ void Game::gameLoop() {
 }
 
 void Game::handleEvents() {
-    SDL_Event event;
     SDL_PollEvent(&event);
-
     switch (event.type) {
         case SDL_QUIT:
+            isRunning = false;
             _gameState = GameState::EXIT;
             break;
     }
 }
 
 void Game::update() {
+    SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+    Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+    std::stringstream ss;
+    ss << "Player position: " << playerPos;
+
+    manager.refresh();
+    manager.update();
+
+    for (auto& c : colliders) {
+        SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+        if (Collision::AABB(cCol, playerCol)) {
+            player.getComponent<TransformComponent>().position = playerPos;
+        }
+    }
+
+    camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - 400);
+    camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - 320);
+
+    if (camera.x < 0)
+        camera.x = 0;
+    if (camera.y < 0)
+        camera.y = 0;
+    if (camera.x > camera.w)
+        camera.x = camera.w;
+    if (camera.y > camera.h)
+        camera.y = camera.h;
 }
 
 void Game::render() {
     SDL_RenderClear(_renderer);
     for (auto& t : tiles) {
         t->draw();
+    }
+    for (auto& c : colliders) {
+        c->draw();
+    }
+
+    for (auto& p : players) {
+        p->draw();
     }
     SDL_RenderPresent(_renderer);
 }
