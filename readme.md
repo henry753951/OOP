@@ -1,12 +1,17 @@
 
-
 # 依賴
 - mingw
 - make  
 
+** 請確認g++和make都可以順利在終端機執行 ** 
+
 # vscode 套件
 - C++  ([marketplace](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools))
 - Makefile Tools  ([marketplace](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools))
+
+# GIT
+ 1. 去安裝GIT
+ 2. 終端機切換到你想要放專案的目錄，並輸入 `git clone https://github.com/henry753951/OOP.git`
 
 # 初始化
 
