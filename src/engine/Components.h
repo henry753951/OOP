@@ -2,6 +2,7 @@
 #include "ColliderComponent.h"
 #include "KeyboardController.h"
 // #include "ProjectileComponent.h"
+#include "../AimComponen.h"
 #include "ECS/ECS.h"
 #include "SpriteComponent.h"
 #include "TileComponent.h"

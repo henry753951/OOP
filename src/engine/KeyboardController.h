@@ -5,7 +5,9 @@
 #include "ECS/ECS.h"
 #include "SpriteComponent.h"
 #include "TransformComponent.h"
-
+using std::cin;
+using std::cout;
+using std::endl;
 class KeyboardController : public Component {
    public:
     TransformComponent *transform;
@@ -17,15 +19,19 @@ class KeyboardController : public Component {
     }
 
     void update() override {
+        int mousePosX = 0;
+        int mousePosY = 0;
+        SDL_GetMouseState(&mousePosX, &mousePosY);
+        if (sprite->destRect.x + 32 < mousePosX) {
+            sprite->spriteFlip = SDL_FLIP_NONE;
+        } else if (sprite->destRect.x + 32 > mousePosX) {
+            sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+        }
+
         if (transform->velocity.y == 0 && transform->velocity.x == 0) {
             sprite->Play("Idle");
         } else {
             sprite->Play("Walk");
-            if (transform->velocity.x > 0) {
-                sprite->spriteFlip = SDL_FLIP_NONE;
-            } else if (transform->velocity.x < 0) {
-                sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-            }
         }
         if (Game::event.type == SDL_KEYDOWN) {
             switch (Game::event.key.keysym.sym) {

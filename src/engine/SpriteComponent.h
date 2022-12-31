@@ -14,12 +14,13 @@ class SpriteComponent : public Component {
    private:
     TransformComponent* transform;
     SDL_Texture* texture;
-    SDL_Rect srcRect, destRect;
+    SDL_Rect srcRect;
 
     bool animated = false;
     int frames = 0;
 
    public:
+    SDL_Rect destRect;
     int speed = 100;
     int animIndex = 0;
     std::map<const char*, Animation> animations;
