@@ -9,11 +9,15 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+        
     - uses: actions/checkout@v3
-
 
     - name: Install dependencies
       run: make
