@@ -23,4 +23,4 @@ jobs:
       run: make
 
     - name: Run check
-      run: make build
+      run: make rebuild
