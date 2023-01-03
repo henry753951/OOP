@@ -100,7 +100,7 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     map->LoadMap("Assets/map.map", 25, 20);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
-    crosshair.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.5);
+    crosshair.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
     player.addComponent<TransformComponent>(800.0f, 640.0f, 128, 128, 1);
     player.addComponent<SpriteComponent>("player", true);
