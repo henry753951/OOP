@@ -13,7 +13,8 @@ using std::cin;
 using std::cout;
 using std::endl;
 Map* map;
-SDL_Rect Game::camera = {0, 0, 1600, 900};
+SDL_Rect Game::camera = {0, 0, 0, 0};
+SDL_DisplayMode DM;
 Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
 SDL_Renderer* Game::_renderer = nullptr;
@@ -22,6 +23,7 @@ bool Game::isRunning = false;
 
 auto& player(manager.addEntity());
 auto& label(manager.addEntity());
+auto& crosshair(manager.addEntity());
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
@@ -56,7 +58,6 @@ void Game::run() {
     init(WindowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_SHOWN);
     SDL_ShowCursor(1);
 
-    SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
 
     // load WindowMode
@@ -75,6 +76,7 @@ void Game::run() {
         default:
             break;
     }
+    Game::camera = {0, 0, DM.w, DM.h};
     gameLoop();
 }
 
@@ -90,12 +92,15 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
+    assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("terrain", "Assets/Texture/ground.png");
     assets->AddTexture("player", "assets/jett_anims.png");
 
     map = new Map("terrain", 3, 32);
     map->LoadMap("Assets/map.map", 25, 20);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
+
+    crosshair.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
     player.addComponent<TransformComponent>(800.0f, 640.0f, 128, 128, 1);
     player.addComponent<SpriteComponent>("player", true);
@@ -149,8 +154,8 @@ void Game::update() {
         }
     }
 
-    camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - 400);
-    camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - 320);
+    camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - DM.w / 2 + 256);
+    camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - DM.h / 2 + 128);
 
     if (camera.x < 0)
         camera.x = 0;
@@ -174,6 +179,7 @@ void Game::render() {
     for (auto& p : players) {
         p->draw();
     }
+    crosshair.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
