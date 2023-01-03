@@ -7,7 +7,7 @@
 CXX = g++
 
 # define any compile-time flags
-CXXFLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -std=c++17
+CXXFLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify

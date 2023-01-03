@@ -4,6 +4,11 @@
 			"cwd": "g:\\Users\\Henry\\Desktop\\Course\\OOP\\output",
 			"binaryPath": "g:\\Users\\Henry\\Desktop\\Course\\OOP\\output\\main.exe",
 			"binaryArgs": []
+		},
+		{
+			"cwd": "c:\\Users\\harry\\Desktop\\OOP\\output",
+			"binaryPath": "c:\\Users\\harry\\Desktop\\OOP\\output\\main.exe",
+			"binaryArgs": []
 		}
 	],
 	"files.associations": {
