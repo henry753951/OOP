@@ -1,4 +1,4 @@
 .vscode
 Makefile
-src/**.o
-output/*
+*.o
+/output/*
