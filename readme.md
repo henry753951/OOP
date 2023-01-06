@@ -15,7 +15,7 @@
 
 # 初始化
 
- 1. 把 `.vscode.example` 改名成 `.vscode`
+ 1. 把 `.vscode.example` 拷貝一份並改名成 `.vscode`
  
  2. 將 `c_cpp_properties.json` 內的 `compilerPath` **的值**，更改成你 g++ 的路徑
 	 舉例  ``"compilerPath": "C:/mingw64/bin/g++.exe",``
