@@ -18,6 +18,7 @@ enum class GameState {
 class Game {
    private:
     void init(const char* title, int x, int y, int w, int h, Uint32 flags);
+    void AddEnemy(float,float);
     void gameLoop();
     void handleEvents();
 
@@ -41,6 +42,7 @@ class Game {
         groupMap,
         groupPlayers,
         groupColliders,
+        groupEnemys,
     };
     Game();
     ~Game();
