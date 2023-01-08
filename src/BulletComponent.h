@@ -8,31 +8,37 @@
 class BulletComponent : public Component {
    public:
     SDL_Texture* texture;
-    SDL_Rect srcRect, destRect;
+    SDL_Rect destRect;
     Vector2D position;
+    Vector2D vec;
+    int count=0;
 
     BulletComponent() = default;
 
     ~BulletComponent() {
-        SDL_DestroyTexture(texture);
+
     }
 
-    BulletComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id) {
-        texture = Game::assets->GetTexture(id);
-
-        srcRect.x = srcX;
-        srcRect.y = srcY;
-        srcRect.w = srcRect.h = tsize;
-        position.x = static_cast<float>(xpos);
-        position.y = static_cast<float>(ypos);
-        destRect.w = destRect.h = tsize * tscale;
+    BulletComponent(int x,int y,double vecX,double vecY) {
+        count++;
+        if(count>10000){
+            std::cout << count << std::endl;
+            delete this;
+        }
+        position.x = static_cast<float>(x);
+        position.y = static_cast<float>(y);
+        vec.x = vecX;
+        vec.y = vecY;
     }
 
     void update() override {
+        position.Add(vec);
         destRect.x = static_cast<int>(position.x - Game::camera.x);
         destRect.y = static_cast<int>(position.y - Game::camera.y);
+        SDL_RenderDrawPoint(Game::_renderer,destRect.x,destRect.y);
     }
     void draw() override {
-        TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+        // TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+        
     }
 };

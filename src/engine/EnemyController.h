@@ -26,7 +26,7 @@ class EnemyController : public Component {
 
     void update() override {
         for (auto& p : players) {
-            cout << p->getComponent<TransformComponent>().position.x << endl;
+            //cout << p->getComponent<TransformComponent>().position.x << endl;
         }
         int mousePosX = 0;
         int mousePosY = 0;
