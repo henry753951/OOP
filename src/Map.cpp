@@ -41,7 +41,7 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY) {
             mapFile.get(c);
             if (c == '1') {
                 auto& tcol(manager.addEntity());
-                tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 0);
+                tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 95);
                 tcol.addGroup(Game::groupColliders);
             }
             mapFile.ignore();

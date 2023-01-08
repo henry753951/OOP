@@ -1,5 +1,5 @@
 #include "header/Game.h"
-
+// hi
 #include <iostream>
 #include <sstream>
 
@@ -13,20 +13,22 @@
 using std::cin;
 using std::cout;
 using std::endl;
-Map* map;
+Map *map;
 SDL_Rect Game::camera = {0, 0, 0, 0};
 SDL_DisplayMode DM;
 Manager manager;
-AssetManager* Game::assets = new AssetManager(&manager);
-SDL_Renderer* Game::_renderer = nullptr;
+AssetManager *Game::assets = new AssetManager(&manager);
+SDL_Renderer *Game::_renderer = nullptr;
 SDL_Event Game::event;
 bool Game::isRunning = false;
+auto &player(manager.addEntity());
+auto &label(manager.addEntity());
+auto &enemy(manager.addEntity());
+auto &tiles(manager.getGroup(Game::groupMap));
+auto &players(manager.getGroup(Game::groupPlayers));
+auto &colliders(manager.getGroup(Game::groupColliders));
+auto &enemys(manager.getGroup(Game::groupEnemys));
 
-auto& player(manager.addEntity());
-auto& label(manager.addEntity());
-auto& tiles(manager.getGroup(Game::groupMap));
-auto& players(manager.getGroup(Game::groupPlayers));
-auto& colliders(manager.getGroup(Game::groupColliders));
 /**
  *  遊戲建構子
  *  載入設定檔、讀入物件內
@@ -83,8 +85,9 @@ void Game::run() {
 /**
  *  初始化視窗、render
  */
-void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) std::cerr << "Error: Failed at SDL_Init()" << endl;
+void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+        std::cerr << "Error: Failed at SDL_Init()" << endl;
     _window = SDL_CreateWindow(title, x, y, w, h, flags);
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
     isRunning = true;
@@ -115,10 +118,21 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
+
+    AddEnemy(700.0f, 640.0f);
+    AddEnemy(800.0f, 1500.0f);
 }
 
 Uint32 frameStart;
 int frameTime;
+
+void Game::AddEnemy(float srcX, float srcY) {
+    enemy.addComponent<TransformComponent>(srcX, srcY, 128, 128, 1);
+    enemy.addComponent<SpriteComponent>("player", true);
+    enemy.addComponent<EnemyController>();
+    enemy.addComponent<ColliderComponent>("enemy");
+    enemy.addGroup(groupEnemys);
+}
 
 void Game::gameLoop() {
     while (_gameState != GameState::EXIT) {
@@ -127,7 +141,6 @@ void Game::gameLoop() {
         update();
         render();
         frameTime = SDL_GetTicks() - frameStart;
-
         if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
         }
@@ -155,7 +168,7 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    for (auto& c : colliders) {
+    for (auto &c : colliders) {
         SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
         if (Collision::AABB(cCol, playerCol)) {
             player.getComponent<TransformComponent>().position = playerPos;
@@ -177,14 +190,14 @@ void Game::update() {
 
 void Game::render() {
     SDL_RenderClear(_renderer);
-    for (auto& t : tiles) {
+    for (auto &t : tiles) {
         t->draw();
     }
-    for (auto& c : colliders) {
-        c->draw();
-    }
 
-    for (auto& p : players) {
+    for (auto &e : enemys) {
+        e->draw();
+    }
+    for (auto &p : players) {
         p->draw();
     }
     SDL_RenderPresent(_renderer);

@@ -8,7 +8,7 @@
 #include "header/Game.h"
 extern Manager manager;
 class AimComponent : public Component {
-   public:
+public:
     SDL_Texture* texture;
     SDL_Rect srcRect, destRect;
     Vector2D position;

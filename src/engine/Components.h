@@ -5,6 +5,7 @@
 #include "../AimComponen.h"
 #include "ECS/ECS.h"
 #include "SpriteComponent.h"
+#include "EnemyController.h"
 #include "TileComponent.h"
 #include "TransformComponent.h"
 #include "UILabel.h"
