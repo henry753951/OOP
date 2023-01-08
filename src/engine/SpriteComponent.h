@@ -13,7 +13,6 @@
 class SpriteComponent : public Component {
    private:
     TransformComponent* transform;
-    SDL_Texture* texture;
     SDL_Rect srcRect;
 
     bool animated = false;
@@ -21,66 +20,59 @@ class SpriteComponent : public Component {
 
    public:
     SDL_Rect destRect;
+    double angle;
     int speed = 100;
     int animIndex = 0;
-    std::map<const char*, Animation> animations;
-
+    std::map<std::string, Animation> animations;
+    std::string currentAnimName;
+    SDL_Texture* texture;
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 
     SpriteComponent() = default;
-    SpriteComponent(std::string id) {
-        setTex(id);
-    }
 
-    SpriteComponent(std::string id, bool isAnimated) {
+    SpriteComponent(std::vector<Animation> animationList, bool isAnimated) {
         animated = isAnimated;
-
-        Animation idle = Animation(0, 3, 150);
-        Animation walk = Animation(1, 4, 150);
-
-        animations.emplace("Idle", idle);
-        animations.emplace("Walk", walk);
-
-        Play("Idle");
-
-        setTex(id);
+        for (auto animation : animationList) {
+            animations.emplace(animation.key, animation);
+        }
+        Play(animationList[0].key);
     }
 
     ~SpriteComponent() {
-    }
-
-    void setTex(std::string id) {
-        texture = Game::assets->GetTexture(id);
     }
 
     void init() override {
         transform = &entity->getComponent<TransformComponent>();
 
         srcRect.x = srcRect.y = 0;
-        srcRect.w = transform->width;
-        srcRect.h = transform->height;
+        srcRect.w = animations[currentAnimName].width;
+        srcRect.h = animations[currentAnimName].height;
     }
 
     void update() override {
-        if (animated) {
-            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
-        }
+        srcRect.w = animations[currentAnimName].width;
+        srcRect.h = animations[currentAnimName].height;
 
-        srcRect.y = animIndex * transform->height;
+        srcRect.y = animIndex * animations[currentAnimName].height;
 
         destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
         destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
-        destRect.w = transform->width * transform->scale;
-        destRect.h = transform->height * transform->scale;
+        destRect.w = animations[currentAnimName].width * transform->scale;
+        destRect.h = animations[currentAnimName].height * transform->scale;
+        texture = Game::assets->GetTexture(currentAnimName);
+        if (animated) {
+            srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
+        }
     }
 
     void draw() override {
-        TextureManager::Draw(texture, srcRect, destRect, spriteFlip);
+        TextureManager::Draw(texture, srcRect, destRect, spriteFlip, angle);
     }
 
-    void Play(const char* animName) {
+    void Play(std::string animName) {
         frames = animations[animName].frames;
         animIndex = animations[animName].index;
         speed = animations[animName].speed;
+        currentAnimName = animName;
     }
 };
