@@ -38,7 +38,7 @@ class AimComponent : public Component {
         position.y = static_cast<int>(y - offset);
         destRect.x = static_cast<int>(x - offset);
         destRect.y = static_cast<int>(y - offset);
-        
+
         float deltaX;
         float deltaY;
         deltaX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2 - Game::camera.x - x;

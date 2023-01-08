@@ -205,12 +205,13 @@ void Game::render() {
     for (auto &e : enemys) {
         e->draw();
     }
-    for (auto &p : players) {
-        p->draw();
-    }
     for (auto &b : bullets) {
         b->draw();
     }
+    for (auto &p : players) {
+        p->draw();
+    }
+
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
