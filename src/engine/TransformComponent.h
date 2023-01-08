@@ -10,7 +10,6 @@ class TransformComponent : public Component {
     int height = 32;
     int width = 32;
     int scale = 1;
-
     float speed = 3;
 
     bool blocked = false;
@@ -33,6 +32,11 @@ class TransformComponent : public Component {
         position.y = y;
         height = h;
         width = w;
+        scale = sc;
+    }
+    TransformComponent(float x, float y, int sc) {
+        position.x = x;
+        position.y = y;
         scale = sc;
     }
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "engine/Animation.h"
 #include "engine/AssetManager.h"
 #include "engine/Collision.h"
 #include "engine/Components.h"
@@ -23,7 +24,6 @@ bool Game::isRunning = false;
 
 auto& player(manager.addEntity());
 auto& label(manager.addEntity());
-auto& crosshair(manager.addEntity());
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
@@ -94,16 +94,24 @@ void Game::init(const char* title, int x, int y, int w, int h, Uint32 flags) {
 
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("terrain", "Assets/Texture/ground.png");
-    assets->AddTexture("player", "assets/jett_anims.png");
+    assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
+    assets->AddTexture("pistol_fire", "Assets/Texture/spritesheets/player/pistol/pistol_fire.png");
+    assets->AddTexture("pistol_reload", "Assets/Texture/spritesheets/player/pistol/pistol_reload.png");
+    assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
 
     map = new Map("terrain", 3, 32);
     map->LoadMap("Assets/map.map", 25, 20);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
-    crosshair.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
+    player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
-    player.addComponent<TransformComponent>(800.0f, 640.0f, 128, 128, 1);
-    player.addComponent<SpriteComponent>("player", true);
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 1);
+    Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
+    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
+    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+    std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
+    player.addComponent<SpriteComponent>(ids, true);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
@@ -179,7 +187,6 @@ void Game::render() {
     for (auto& p : players) {
         p->draw();
     }
-    crosshair.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
