@@ -133,6 +133,7 @@ void Game::AddEnemy(float srcX, float srcY) {
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
     Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+
     std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
     enemy.addComponent<SpriteComponent>(ids, true);
     enemy.addComponent<EnemyController>();
