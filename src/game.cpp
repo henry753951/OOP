@@ -28,6 +28,7 @@ auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
+auto &bullets(manager.getGroup(Game::groupBullets));
 
 /**
  *  遊戲建構子
@@ -206,6 +207,9 @@ void Game::render() {
     }
     for (auto &p : players) {
         p->draw();
+    }
+    for (auto &b : bullets) {
+        b->draw();
     }
     SDL_RenderPresent(_renderer);
 }
