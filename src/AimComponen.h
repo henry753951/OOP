@@ -8,7 +8,7 @@
 #include "header/Game.h"
 extern Manager manager;
 class AimComponent : public Component {
-public:
+   public:
     SDL_Texture* texture;
     SDL_Rect srcRect, destRect;
     Vector2D position;
@@ -41,8 +41,8 @@ public:
 
         float deltaX;
         float deltaY;
-        deltaX = *(&entity->getComponent<TransformComponent>().position.x) - Game::camera.x - x;
-        deltaY = *(&entity->getComponent<TransformComponent>().position.y) + 10 - Game::camera.y - y;
+        deltaX = *(&entity->getComponent<TransformComponent>().position.x) + 50 - Game::camera.x - x;
+        deltaY = *(&entity->getComponent<TransformComponent>().position.y) + 50 - Game::camera.y - y;
 
         *(&entity->getComponent<SpriteComponent>().angle) = 200 + (atan2(deltaY, deltaX) * 180.0000) / M_PI;
     }

@@ -23,7 +23,7 @@ SDL_Event Game::event;
 bool Game::isRunning = false;
 auto &player(manager.addEntity());
 auto &label(manager.addEntity());
-auto &enemy(manager.addEntity());
+
 auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
@@ -127,8 +127,14 @@ Uint32 frameStart;
 int frameTime;
 
 void Game::AddEnemy(float srcX, float srcY) {
-    enemy.addComponent<TransformComponent>(srcX, srcY, 128, 128, 1);
-    enemy.addComponent<SpriteComponent>("player", true);
+    auto &enemy(manager.addEntity());
+    enemy.addComponent<TransformComponent>(srcX, srcY, 1);
+    Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
+    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
+    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+    std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
+    enemy.addComponent<SpriteComponent>(ids, true);
     enemy.addComponent<EnemyController>();
     enemy.addComponent<ColliderComponent>("enemy");
     enemy.addGroup(groupEnemys);
