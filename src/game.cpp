@@ -29,12 +29,17 @@ auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
 auto &bullets(manager.getGroup(Game::groupBullets));
-
+SDL_Color white;
 /**
  *  遊戲建構子
  *  載入設定檔、讀入物件內
  */
-Game::Game() {
+Game::Game()
+{
+    white.r = 255;
+    white.g = 255;
+    white.b = 255;
+
     _window = nullptr;
     _renderer = nullptr;
     cout << "Load Config File ...\n------------------" << endl;
@@ -55,7 +60,8 @@ Game::~Game(){};
  *  遊戲主執行函式
  *  初始化視窗、render -> Game::init()
  */
-void Game::run() {
+void Game::run()
+{
     char WindowName[] = "Game";
 
     init(WindowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_SHOWN);
@@ -64,20 +70,21 @@ void Game::run() {
     SDL_GetCurrentDisplayMode(0, &DM);
 
     // load WindowMode
-    switch (_windowMode) {
-        case 0:
-            break;
-        case 1:
-            SDL_SetWindowSize(_window, DM.w, DM.h);
-            SDL_SetWindowBordered(_window, SDL_FALSE);
-            SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-            break;
-        case 2:
-            SDL_SetWindowSize(_window, DM.w, DM.h);
-            SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN);
-            break;
-        default:
-            break;
+    switch (_windowMode)
+    {
+    case 0:
+        break;
+    case 1:
+        SDL_SetWindowSize(_window, DM.w, DM.h);
+        SDL_SetWindowBordered(_window, SDL_FALSE);
+        SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        break;
+    case 2:
+        SDL_SetWindowSize(_window, DM.w, DM.h);
+        SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN);
+        break;
+    default:
+        break;
     }
     Game::camera = {0, 0, DM.w, DM.h};
     gameLoop();
@@ -86,13 +93,16 @@ void Game::run() {
 /**
  *  初始化視窗、render
  */
-void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
+
+void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
+{
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         std::cerr << "Error: Failed at SDL_Init()" << endl;
     _window = SDL_CreateWindow(title, x, y, w, h, flags);
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
     isRunning = true;
-    if (_renderer) {
+    if (_renderer)
+    {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
@@ -105,11 +115,11 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 
     map = new Map("terrain", 3, 32);
     map->LoadMap("Assets/map.map", 25, 20);
-    // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
+    label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
     player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
-    player.addComponent<TransformComponent>(800.0f, 640.0f, 1);
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.7);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
@@ -120,16 +130,17 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
 
-    AddEnemy(700.0f, 640.0f, 100 , 0.8);
-    AddEnemy(800.0f, 1500.0f , 100 , 0);
+    AddEnemy(700.0f, 640.0f, 100, 0.8);
+    AddEnemy(800.0f, 1500.0f, 100, 0);
 }
 
 Uint32 frameStart;
 int frameTime;
 
-void Game::AddEnemy(float srcX, float srcY,int hp, float speed) {
+void Game::AddEnemy(float srcX, float srcY, int hp, float speed)
+{
     auto &enemy(manager.addEntity());
-    enemy.addComponent<TransformComponent>(srcX, srcY, 1);
+    enemy.addComponent<TransformComponent>(srcX, srcY, 0.7);
     enemy.addComponent<EnemyStatComponent>(true, hp, 0, speed);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
@@ -143,31 +154,37 @@ void Game::AddEnemy(float srcX, float srcY,int hp, float speed) {
     enemy.addGroup(groupEnemys);
 }
 
-void Game::gameLoop() {
-    while (_gameState != GameState::EXIT) {
+void Game::gameLoop()
+{
+    while (_gameState != GameState::EXIT)
+    {
         frameStart = SDL_GetTicks();
         handleEvents();
         update();
         render();
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime) {
+        if (frameDelay > frameTime)
+        {
             SDL_Delay(frameDelay - frameTime);
         }
     }
     quit();
 }
 
-void Game::handleEvents() {
+void Game::handleEvents()
+{
     SDL_PollEvent(&event);
-    switch (event.type) {
-        case SDL_QUIT:
-            isRunning = false;
-            _gameState = GameState::EXIT;
-            break;
+    switch (event.type)
+    {
+    case SDL_QUIT:
+        isRunning = false;
+        _gameState = GameState::EXIT;
+        break;
     }
 }
 
-void Game::update() {
+void Game::update()
+{
     SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
@@ -177,9 +194,11 @@ void Game::update() {
     manager.refresh();
     manager.update();
 
-    for (auto &c : colliders) {
+    for (auto &c : colliders)
+    {
         SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-        if (Collision::AABB(cCol, playerCol)) {
+        if (Collision::AABB(cCol, playerCol))
+        {
             player.getComponent<TransformComponent>().position = playerPos;
         }
     }
@@ -197,25 +216,35 @@ void Game::update() {
         camera.y = camera.h;
 }
 
-void Game::render() {
+void Game::render()
+{
     SDL_RenderClear(_renderer);
-    for (auto &t : tiles) {
+    for (auto &t : tiles)
+    {
         t->draw();
     }
-
-    for (auto &e : enemys) {
+    for (auto &C : colliders)
+    {
+        C->draw();
+    }
+    for (auto &e : enemys)
+    {
         e->draw();
     }
-    for (auto &b : bullets) {
+    for (auto &b : bullets)
+    {
         b->draw();
     }
-    for (auto &p : players) {
+    for (auto &p : players)
+    {
         p->draw();
     }
+    label.draw();
 
     SDL_RenderPresent(_renderer);
 }
-void Game::quit() {
+void Game::quit()
+{
     SDL_DestroyWindow(_window);
     SDL_DestroyRenderer(_renderer);
     SDL_Quit();

@@ -22,15 +22,16 @@ class BulletComponent : public Component {
     }
 
     BulletComponent(int x, int y, double vecX, double vecY) {
+        std::cout << pow(vecX,2) + pow(vecY,2);
         texture = Game::assets->GetTexture("crosshair");
         srcRect.x = 0;
         srcRect.y = 0;
         srcRect.w = srcRect.h = 200;
         destRect.w = destRect.h = 50 * 1;
-        position.x = static_cast<float>(x);
-        position.y = static_cast<float>(y);
-        vec.x = vecX * 5.0;
-        vec.y = vecY * 5.0;
+        position.x = x;
+        position.y = y;
+        vec.x = vecX * 50.0f;
+        vec.y = vecY * 50.0f;
     }
 
     void update() override {
@@ -39,8 +40,8 @@ class BulletComponent : public Component {
             delete this;
         }
         position.Add(vec);
-        destRect.x = static_cast<int>(position.x - Game::camera.x);
-        destRect.y = static_cast<int>(position.y - Game::camera.y);
+        destRect.x = static_cast<int>(position.x - static_cast<float>(Game::camera.x));
+        destRect.y = static_cast<int>(position.y - static_cast<float>(Game::camera.y));
     }
     void draw() override {
         TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);

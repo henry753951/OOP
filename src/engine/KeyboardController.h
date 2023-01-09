@@ -83,7 +83,6 @@ class KeyboardController : public Component {
         if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
             switch (Game::event.button.button) {
                 case SDL_BUTTON_LEFT:
-                    std::cout << "mouse clicked";
                     fire(mousePosX, mousePosY);
                     break;
                 case SDL_BUTTON_RIGHT:
@@ -95,11 +94,11 @@ class KeyboardController : public Component {
     }
 
     void fire(int x, int y) {
-        int playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2;
-        int playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + *(&entity->getComponent<SpriteComponent>().destRect.h) / 2;
+        double playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2;
+        double playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + *(&entity->getComponent<SpriteComponent>().destRect.h) / 2;
 
-        int distanceX = x + Game::camera.x - playerPositionX;
-        int distanceY = y + Game::camera.y - playerPositionY;
+        double distanceX = x + Game::camera.x - playerPositionX;
+        double distanceY = y + Game::camera.y - playerPositionY;
         double vecX = distanceX / sqrt(distanceX * distanceX + distanceY * distanceY);
         double vecY = distanceY / sqrt(distanceX * distanceX + distanceY * distanceY);
 
