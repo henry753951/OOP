@@ -94,8 +94,8 @@ class KeyboardController : public Component {
     }
 
     void fire(int x, int y) {
-        double playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2;
-        double playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + *(&entity->getComponent<SpriteComponent>().destRect.h) / 2;
+        double playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
+        double playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 
         double distanceX = x + Game::camera.x - playerPositionX;
         double distanceY = y + Game::camera.y - playerPositionY;
