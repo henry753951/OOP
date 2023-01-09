@@ -10,3 +10,4 @@
 #include "TileComponent.h"
 #include "TransformComponent.h"
 #include "UILabel.h"
+#include "../BulletComponent.h"

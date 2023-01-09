@@ -43,6 +43,7 @@ class Game {
         groupPlayers,
         groupColliders,
         groupEnemys,
+        groupBullets,
     };
     Game();
     ~Game();

@@ -32,10 +32,8 @@ public:
         sprite = &entity->getComponent<SpriteComponent>();
     }
 
-    void update() override
-    {
-        // 取得玩家位置
-        for (auto &p : players)
+    void update() override {
+               for (auto &p : players)
         {
             distanceX = (p->getComponent<TransformComponent>().position.x) - transform->position.x;
             distanceY = (p->getComponent<TransformComponent>().position.y) - transform->position.y;
@@ -54,8 +52,7 @@ public:
                        //  }
 
                        //  動畫
-        if (transform->velocity.y == 0 && transform->velocity.x == 0)
-        {
+        if (transform->velocity.y == 0 && transform->velocity.x == 0) {
             sprite->Play("pistol_idle");
         }
         else

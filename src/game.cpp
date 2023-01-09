@@ -28,6 +28,7 @@ auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
+auto &bullets(manager.getGroup(Game::groupBullets));
 
 /**
  *  遊戲建構子
@@ -134,6 +135,7 @@ void Game::AddEnemy(float srcX, float srcY,int hp, float speed) {
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
     Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+
     std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
     enemy.addComponent<SpriteComponent>(ids, true);
     enemy.addComponent<EnemyController>();
@@ -204,9 +206,13 @@ void Game::render() {
     for (auto &e : enemys) {
         e->draw();
     }
+    for (auto &b : bullets) {
+        b->draw();
+    }
     for (auto &p : players) {
         p->draw();
     }
+
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
