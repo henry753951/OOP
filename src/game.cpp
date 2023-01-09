@@ -113,7 +113,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 
     player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
-    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.7);
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.3);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
@@ -133,7 +133,7 @@ int frameTime;
 
 void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
     auto &enemy(manager.addEntity());
-    enemy.addComponent<TransformComponent>(srcX, srcY, 0.7);
+    enemy.addComponent<TransformComponent>(srcX, srcY, 0.3);
     enemy.addComponent<EnemyStatComponent>(true, hp, 0, speed);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);

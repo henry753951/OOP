@@ -22,7 +22,7 @@ class BulletComponent : public Component {
     }
 
     BulletComponent(int x, int y, double vecX, double vecY) {
-        std::cout << pow(vecX,2) + pow(vecY,2);
+        std::cout << pow(vecX, 2) + pow(vecY, 2);
         texture = Game::assets->GetTexture("crosshair");
         srcRect.x = 0;
         srcRect.y = 0;
@@ -44,6 +44,8 @@ class BulletComponent : public Component {
         destRect.y = static_cast<int>(position.y - static_cast<float>(Game::camera.y));
     }
     void draw() override {
-        TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+        SDL_SetRenderDrawColor(Game::_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderDrawLine(Game::_renderer, destRect.x, destRect.y, destRect.x + vec.x * 2, destRect.y + vec.y * 2);
+        SDL_SetRenderDrawColor(Game::_renderer, 0x00, 0x00, 0x00, 0x00);
     }
 };
