@@ -119,16 +119,17 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
 
-    AddEnemy(700.0f, 640.0f);
-    AddEnemy(800.0f, 1500.0f);
+    AddEnemy(700.0f, 640.0f, 100 , 0.8);
+    AddEnemy(800.0f, 1500.0f , 100 , 0);
 }
 
 Uint32 frameStart;
 int frameTime;
 
-void Game::AddEnemy(float srcX, float srcY) {
+void Game::AddEnemy(float srcX, float srcY,int hp, float speed) {
     auto &enemy(manager.addEntity());
     enemy.addComponent<TransformComponent>(srcX, srcY, 1);
+    enemy.addComponent<EnemyStatComponent>(true, hp, 0, speed);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);

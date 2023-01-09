@@ -44,7 +44,7 @@ class AimComponent : public Component {
         deltaX = *(&entity->getComponent<TransformComponent>().position.x) + 50 - Game::camera.x - x;
         deltaY = *(&entity->getComponent<TransformComponent>().position.y) + 50 - Game::camera.y - y;
 
-        *(&entity->getComponent<SpriteComponent>().angle) = 200 + (atan2(deltaY, deltaX) * 180.0000) / M_PI;
+        *(&entity->getComponent<SpriteComponent>().angle) = 170 + (atan2(deltaY, deltaX) * 180.0000) / M_PI;
     }
     void draw() override {
         TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
