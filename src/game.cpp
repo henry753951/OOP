@@ -125,7 +125,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     player.addGroup(groupPlayers);
 
     AddEnemy(700.0f, 640.0f, 100, 0.8);
-    AddEnemy(800.0f, 1500.0f, 100, 0);
+    AddEnemy(800.0f, 800.0f, 100, 0);
 }
 
 Uint32 frameStart;
