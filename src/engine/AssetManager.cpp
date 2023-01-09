@@ -4,8 +4,9 @@ AssetManager::AssetManager(Manager* man) : manager(man) {}
 
 AssetManager::~AssetManager() {}
 
-void AssetManager::AddTexture(std::string id, const char* path) {
+SDL_Texture* AssetManager::AddTexture(std::string id, const char* path) {
     textures.emplace(id, TextureManager::LoadTexture(path));
+    return textures[id];
 }
 
 SDL_Texture* AssetManager::GetTexture(std::string id) {

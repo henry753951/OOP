@@ -7,7 +7,7 @@ class Map {
     Map(std::string tID, int ms, int ts);
     ~Map();
 
-    void LoadMap(std::string path, int sizeX, int sizeY);
+    void LoadMap(std::string path, std::string ColliderMapPath, int sizeX, int sizeY);
     void AddTile(int srcX, int srcY, int xpos, int ypos);
 
    private:
@@ -15,4 +15,6 @@ class Map {
     int mapScale;
     int tileSize;
     int scaledSize;
+    int rows;
+    int cols;
 };

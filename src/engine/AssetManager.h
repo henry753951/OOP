@@ -16,7 +16,7 @@ class AssetManager {
     // gameobjects
 
     // texture management
-    void AddTexture(std::string id, const char* path);
+    SDL_Texture* AddTexture(std::string id, const char* path);
     SDL_Texture* GetTexture(std::string id);
 
     void AddFont(std::string id, std::string path, int fontSize);

@@ -52,7 +52,7 @@ INCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 LIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
 # define the C source files
-SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS))) $(wildcard $(SRC)/engine/*.cpp) $(wildcard $(SRC)/engine/ECS/*.cpp)
+SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS))) $(wildcard $(SRC)/engine/*.cpp) $(wildcard $(SRC)/engine/ECS/*.cpp) $(wildcard $(SRC)/tmxlite/*.cpp) $(wildcard $(SRC)/tmxlite/detail/*.cpp)
 
 # define the C object files 
 OBJECTS		:= $(SOURCES:.cpp=.o)

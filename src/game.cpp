@@ -97,14 +97,13 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     }
 
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
-    assets->AddTexture("terrain", "Assets/Texture/ground.png");
     assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
     assets->AddTexture("pistol_fire", "Assets/Texture/spritesheets/player/pistol/pistol_fire.png");
     assets->AddTexture("pistol_reload", "Assets/Texture/spritesheets/player/pistol/pistol_reload.png");
     assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
 
-    map = new Map("terrain", 3, 32);
-    map->LoadMap("Assets/map.map", 25, 20);
+    map = new Map("terrain", 1, 32);
+    map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
     player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
