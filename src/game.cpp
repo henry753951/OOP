@@ -29,12 +29,16 @@ auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
 auto &bullets(manager.getGroup(Game::groupBullets));
-
+SDL_Color white;
 /**
  *  遊戲建構子
  *  載入設定檔、讀入物件內
  */
 Game::Game() {
+    white.r = 255;
+    white.g = 255;
+    white.b = 255;
+
     _window = nullptr;
     _renderer = nullptr;
     cout << "Load Config File ...\n------------------" << endl;
@@ -86,6 +90,7 @@ void Game::run() {
 /**
  *  初始化視窗、render
  */
+
 void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         std::cerr << "Error: Failed at SDL_Init()" << endl;
@@ -108,7 +113,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 
     player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
-    player.addComponent<TransformComponent>(800.0f, 640.0f, 1);
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.7);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
@@ -119,16 +124,17 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
 
-    AddEnemy(700.0f, 640.0f);
-    AddEnemy(800.0f, 1500.0f);
+    AddEnemy(700.0f, 640.0f, 100, 0.8);
+    AddEnemy(800.0f, 1500.0f, 100, 0);
 }
 
 Uint32 frameStart;
 int frameTime;
 
-void Game::AddEnemy(float srcX, float srcY) {
+void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
     auto &enemy(manager.addEntity());
-    enemy.addComponent<TransformComponent>(srcX, srcY, 1);
+    enemy.addComponent<TransformComponent>(srcX, srcY, 0.7);
+    enemy.addComponent<EnemyStatComponent>(true, hp, 0, speed);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
@@ -200,7 +206,9 @@ void Game::render() {
     for (auto &t : tiles) {
         t->draw();
     }
-
+    for (auto &C : colliders) {
+        C->draw();
+    }
     for (auto &e : enemys) {
         e->draw();
     }
@@ -210,6 +218,7 @@ void Game::render() {
     for (auto &p : players) {
         p->draw();
     }
+    label.draw();
 
     SDL_RenderPresent(_renderer);
 }

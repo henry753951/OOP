@@ -9,7 +9,7 @@ class TransformComponent : public Component {
 
     int height = 32;
     int width = 32;
-    int scale = 1;
+    float scale = 1;
     float speed = 3;
 
     bool blocked = false;
@@ -18,7 +18,7 @@ class TransformComponent : public Component {
         position.Zero();
     }
 
-    TransformComponent(int sc) {
+    TransformComponent(float sc) {
         position.Zero();
         scale = sc;
     }
@@ -27,14 +27,14 @@ class TransformComponent : public Component {
         position.Zero();
     }
 
-    TransformComponent(float x, float y, int h, int w, int sc) {
+    TransformComponent(float x, float y, int h, int w, float sc) {
         position.x = x;
         position.y = y;
         height = h;
         width = w;
         scale = sc;
     }
-    TransformComponent(float x, float y, int sc) {
+    TransformComponent(float x, float y, float sc) {
         position.x = x;
         position.y = y;
         scale = sc;
