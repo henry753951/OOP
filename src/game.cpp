@@ -189,7 +189,7 @@ void Game::update() {
         for (auto &b : bullets) {
             Vector2D pos = (*b).getComponent<BulletComponent>().position;
             if (Collision::AABB(cCol, pos)) {
-                delete b;
+                b->getComponent<BulletComponent>().~BulletComponent();
             }
         }
     }
