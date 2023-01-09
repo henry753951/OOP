@@ -28,21 +28,32 @@ void Map::LoadMap(std::string path, std::string ColliderMapPath, int sizeX, int 
             AddTile(srcX, srcY, x * scaledSize, y * scaledSize);
         }
     }
-    // std::fstream mapFile;
-    // mapFile.open(ColliderMapPath);
-    // for (int y = 0; y < sizeY; y++) {
-    //     for (int x = 0; x < sizeX; x++) {
-    //         mapFile.get(c);
-    //         if (c != '-1') {
-    //             auto& tcol(manager.addEntity());
-    //             tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 95);
-    //             tcol.addGroup(Game::groupColliders);
-    //         }
-    //         mapFile.ignore();
-    //     }
-    // }
 
-    // mapFile.close();
+    std::ifstream data(ColliderMapPath);
+    std::string line;
+    std::vector<std::vector<std::string> > parsedCsv;
+    while (std::getline(data, line)) {
+        std::stringstream lineStream(line);
+        std::string cell;
+        std::vector<std::string> parsedRow;
+        while (std::getline(lineStream, cell, ',')) {
+            parsedRow.push_back(cell);
+        }
+
+        parsedCsv.push_back(parsedRow);
+    }
+    for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < sizeX; x++) {
+            if (parsedCsv[y][x] != "-1") {
+                std::cout << x << " " << y << "\n";
+                auto& tcol(manager.addEntity());
+                tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 95);
+                tcol.addGroup(Game::groupColliders);
+            }
+        }
+    }
+
+    data.close();
 }
 
 void Map::AddTile(int srcX, int srcY, int xpos, int ypos) {
