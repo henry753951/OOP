@@ -45,7 +45,6 @@ void Map::LoadMap(std::string path, std::string ColliderMapPath, int sizeX, int 
     for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
             if (parsedCsv[y][x] != "-1") {
-                std::cout << x << " " << y << "\n";
                 auto& tcol(manager.addEntity());
                 tcol.addComponent<ColliderComponent>("terrain", x * scaledSize, y * scaledSize, 45);
                 tcol.addGroup(Game::groupColliders);

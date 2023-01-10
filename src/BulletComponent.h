@@ -1,9 +1,13 @@
 #pragma once
-
+#include "engine/Components.h"
 #include "engine/ECS/ECS.h"
 #include "engine/TextureManager.h"
 #include "engine/Vector2D.h"
 #include "header/Game.h"
+#include "engine/Collision.h"
+
+extern Manager manager;
+
 
 class BulletComponent : public Component {
    public:
@@ -17,12 +21,15 @@ class BulletComponent : public Component {
 
     BulletComponent() = default;
 
+    // void Damaging(Entity* e){
+    //     (*e).getComponent<EnemyController>().healthPoint -= 5;
+    // }
+
     ~BulletComponent() {
         this->entity->delGroup(Game::groupBullets);
     }
 
     BulletComponent(int x, int y, double vecX, double vecY) {
-        std::cout << pow(vecX, 2) + pow(vecY, 2);
         texture = Game::assets->GetTexture("crosshair");
         srcRect.x = 0;
         srcRect.y = 0;
@@ -42,6 +49,16 @@ class BulletComponent : public Component {
         position.Add(vec);
         destRect.x = static_cast<int>(position.x - static_cast<float>(Game::camera.x));
         destRect.y = static_cast<int>(position.y - static_cast<float>(Game::camera.y));
+        auto& enemys(manager.getGroup(Game::groupEnemys));
+        for (auto &e : enemys) {
+            if (Collision::AABB(e->getComponent<ColliderComponent>().collider, position)) {
+                // b->getComponent<BulletComponent>().Damaging(e);
+                std::cout << "hit" << std::endl;
+                delete this;
+                break;
+            }
+        }
+
     }
     void draw() override {
         SDL_SetRenderDrawColor(Game::_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
