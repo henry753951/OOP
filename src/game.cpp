@@ -200,15 +200,6 @@ void Game::AddLabels(int X, int Y, std::string content,std::string font,SDL_Colo
     label.addGroup(groupLabels);
 }
 
-
-void Game::AddLabels(int X, int Y, std::string content,std::string font,SDL_Color colour)
-{
-    auto &label(manager.addEntity());
-    label.addComponent<UILabel>(X, Y, content, font, colour);
-    label.addGroup(groupLabels);
-}
-
-
 void Game::gameLoop() {
     while (_gameState != GameState::EXIT) {
         frameStart = SDL_GetTicks();
