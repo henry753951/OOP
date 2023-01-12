@@ -22,7 +22,7 @@ class Game {
     void AddHostage(float,float,int,float);
     void gameLoop();
     void handleEvents();
-    void wait(int);
+    void AddUI(std::string, int , int , int , int ,int , int , float);
 
     int _screenWidth;
     int _screenHight;
@@ -47,6 +47,7 @@ class Game {
         groupEnemys,
         groupBullets,
         groupHostages,
+        groupUIs,
     };
     Game();
     ~Game();

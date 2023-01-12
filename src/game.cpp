@@ -30,6 +30,7 @@ auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
 auto &hostages(manager.getGroup(Game::groupHostages));
 auto &bullets(manager.getGroup(Game::groupBullets));
+auto &UIs(manager.getGroup(Game::groupUIs));
 SDL_Color white;
 /**
  *  遊戲建構子
@@ -113,6 +114,9 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     assets->AddTexture("pistol_fire", "Assets/Texture/spritesheets/player/pistol/pistol_fire.png");
     assets->AddTexture("pistol_reload", "Assets/Texture/spritesheets/player/pistol/pistol_reload.png");
     assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
+    assets->AddTexture("HP", "Assets/Texture/HP.png");
+    assets->AddTexture("HPamount", "Assets/Texture/HPamount3.png");
+
 
     map = new Map("terrain", 1, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
@@ -129,11 +133,14 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     player.addComponent<SpriteComponent>(ids, true);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
+    player.addComponent<PlayerStatComponent>(100);
     player.addGroup(groupPlayers);
 
     AddEnemy(700.0f, 640.0f, 100, 0.5);
     AddEnemy(800.0f, 700.0f, 100, 0);
     AddHostage(200.0f, 600.0f, 100, 1.5);
+    AddUI("HP",0,0,30,700,90,110,1);
+    AddUI("HPamount",0,0,30,780,100,520,1);
 }
 
 Uint32 frameStart;
@@ -171,6 +178,13 @@ void Game::AddHostage(float srcX, float srcY, int hp, float speed)
     hostage.addComponent<HostageController>(true, hp, 0, speed);
     hostage.addComponent<ColliderComponent>("hostage");
     hostage.addGroup(groupHostages);
+}
+
+void Game::AddUI(std::string n,int srcX, int srcY, int xpos, int ypos, int htsize, int wtsize, float tscale)
+{
+    auto &UI(manager.addEntity());
+    UI.addComponent<UIComponent>(n, srcX, srcY, xpos, ypos, htsize, wtsize, tscale);
+    UI.addGroup(groupUIs);
 }
 
 void Game::gameLoop()
@@ -277,6 +291,10 @@ void Game::render()
     for (auto &p : players)
     {
         p->draw();
+    }
+    for (auto &u : UIs)
+    {
+        u->draw();
     }
     label.draw();
 

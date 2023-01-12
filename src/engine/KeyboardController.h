@@ -20,6 +20,7 @@ class KeyboardController : public Component {
     int timer = 0;
     int timer2 = 0;
     int clip = 15;
+    bool TakingHostage = false;
 
     void init() override {
         transform = &entity->getComponent<TransformComponent>();
