@@ -76,41 +76,40 @@ class EnemyController : public Component {
                 // cout << distanceY << endl;
             }
             // 若不再玩家視線 則return visable = false
-            if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
-                visable = false;
-                std::cout << "hide\n";
-                return;
-            }
-            visable = true;
-
-            sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
-
-            if (transform->velocity.y == 0 && transform->velocity.x == 0) {
-                sprite->Play("pistol_idle");
-            } else {
-                sprite->Play("pistol_walk");
-            }
-
-            if (nowMode == 0) {
+            if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), (nowx), (nowy))) {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;
-            } else if (nowMode == 1) {
-                if (sqrt(pow(distanceX, 2) + pow(distanceY, 2)) <= 80) {
+                std::cout << "Blocked" << std::endl;
+            } else {
+                std::cout << "no Blocked" << std::endl;
+                sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
+
+                if (transform->velocity.y == 0 && transform->velocity.x == 0) {
+                    sprite->Play("pistol_idle");
+                } else {
+                    sprite->Play("pistol_walk");
+                }
+
+                if (nowMode == 0) {
                     transform->velocity.x = 0;
                     transform->velocity.y = 0;
-                } else {
-                    transform->velocity.x = speed * (distanceX / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
-                    transform->velocity.y = speed * (distanceY / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                } else if (nowMode == 1) {
+                    if (sqrt(pow(distanceX, 2) + pow(distanceY, 2)) <= 80) {
+                        transform->velocity.x = 0;
+                        transform->velocity.y = 0;
+                    } else {
+                        transform->velocity.x = speed * (distanceX / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                        transform->velocity.y = speed * (distanceY / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                    }
                 }
             }
         }
+
         destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
         destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
     }
 
     void draw() override {
-        if (visable) {
-            TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
-        }
+        TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
     }
 };
