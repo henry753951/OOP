@@ -35,17 +35,7 @@ class UIComponent : public Component {
     }
 
     void update() override {
-        // int x, y = 0;
-        // SDL_GetMouseState(&x, &y);
-        // position.x = static_cast<int>(x - offset);
-        // position.y = static_cast<int>(y - offset);
-        // destRect.x = static_cast<int>(x - offset);
-        // destRect.y = static_cast<int>(y - offset);
-
-        // float deltaX;
-        // float deltaY;
-        // deltaX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2 - Game::camera.x - x;
-        // deltaY = *(&entity->getComponent<TransformComponent>().position.y) + *(&entity->getComponent<SpriteComponent>().destRect.h) / 2 - Game::camera.y - y;
+        
     }
     void draw() override {
         TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);

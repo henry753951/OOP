@@ -3,7 +3,6 @@
 #include "../header/Game.h"
 #include "Components.h"
 #include "ECS/ECS.h"
-#include "SpriteComponent.h"
 #include "TransformComponent.h"
 #include "TextureManager.h"
 
@@ -22,7 +21,6 @@ private:
 public:
     SDL_Texture *texture;
     TransformComponent *transform;
-    SpriteComponent *sprite;
     ColliderComponent *collider;
     SDL_Rect srcRect, destRect;
 
@@ -45,12 +43,13 @@ public:
     {
         players = manager.getGroup(Game::groupPlayers);
         transform = &entity->getComponent<TransformComponent>();
-        sprite = &entity->getComponent<SpriteComponent>();
         collider = &entity->getComponent<ColliderComponent>();
-        texture = Game::assets->GetTexture("blood");
+        texture = Game::assets->GetTexture("hostage");
         srcRect.x = srcRect.y = 0;
-        srcRect.w = srcRect.h = 256;
-        destRect.w = destRect.h = 0;
+        srcRect.w = 1281;
+        srcRect.h = 1535;
+        destRect.w = 1281 * 0.05;
+        destRect.h = 1535 * 0.05;
         // nowMode = 0;
     }
 
@@ -67,7 +66,6 @@ public:
             transform->velocity.x = 0;
             transform->velocity.y = 0;
             destRect.w = destRect.h = 256 * 0.25;
-            sprite->~SpriteComponent();
         }
 
         if (DeadorAlive == true)
@@ -83,10 +81,6 @@ public:
             }
 
             distance = sqrt(pow(distanceX, 2) + pow(distanceY, 2));
-
-            sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
-
-            sprite->Play("pistol_idle");
 
             if (nowMode == 0 || distance <= 30)
             {

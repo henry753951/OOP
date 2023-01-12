@@ -1,4 +1,5 @@
 #include "header/Game.h"
+#include <SDL2/SDL_mixer.h>
 // hi
 #include <iostream>
 #include <sstream>
@@ -11,6 +12,7 @@
 #include "engine/Vector2D.h"
 #include "header/Configuration.h"
 #include "header/Map.h"
+
 using std::cin;
 using std::cout;
 using std::endl;
@@ -21,6 +23,7 @@ Manager manager;
 AssetManager *Game::assets = new AssetManager(&manager);
 SDL_Renderer *Game::_renderer = nullptr;
 SDL_Event Game::event;
+Mix_Music *gMusic = NULL;
 bool Game::isRunning = false;
 auto &player(manager.addEntity());
 auto &label(manager.addEntity());
@@ -105,10 +108,22 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
-    if (TTF_Init() == -1) {
-        cout << "error" << endl;
+    if(TTF_Init()==-1){
+        cout << "TTF could not initialize!" << endl;
+    }
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
+    {
+        printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+    }
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+    {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
+    gMusic = Mix_LoadMUS( "Assets/Audio/background_ambient.mp3" );
+
+    Mix_PlayMusic( gMusic, -1 );
+    assets->AddTexture("hostage", "Assets/Texture/hostage.png");
     assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
@@ -181,14 +196,15 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
 
 void Game::AddHostage(float srcX, float srcY, int hp, float speed) {
     auto &hostage(manager.addEntity());
-    hostage.addComponent<TransformComponent>(srcX, srcY, 0.6);
-    Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
-    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
-    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
-    Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+  hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
+    // Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
+    // Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
+    // Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    // Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
 
-    std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
-    hostage.addComponent<SpriteComponent>(ids, true);
+
+    // std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
+    // hostage.addComponent<SpriteComponent>(ids, true);
     hostage.addComponent<HostageController>(true, hp, 0, speed);
     hostage.addComponent<ColliderComponent>("hostage");
     hostage.addGroup(groupHostages);
@@ -309,4 +325,6 @@ void Game::quit() {
     SDL_DestroyWindow(_window);
     SDL_DestroyRenderer(_renderer);
     SDL_Quit();
+    Mix_FreeMusic( gMusic );
+    gMusic = NULL;
 }
