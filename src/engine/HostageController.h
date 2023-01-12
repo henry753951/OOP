@@ -13,11 +13,11 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-class EnemyController : public Component
+class HostageController : public Component
 {
 private:
     vector<Entity *> players;
-    float distanceX, distanceY;
+    float distance,distanceX, distanceY;
 
 public:
     SDL_Texture *texture;
@@ -33,7 +33,7 @@ public:
     float nowx, nowy;
     int offset;
 
-    EnemyController(bool DoA, int hp, int m, float s)
+    HostageController(bool DoA, int hp, int m, float s)
     {
         DeadorAlive = DoA;
         healthPoint = hp;
@@ -51,6 +51,7 @@ public:
         srcRect.x = srcRect.y = 0;
         srcRect.w = srcRect.h = 256;
         destRect.w = destRect.h = 0;
+        // nowMode = 0;
     }
 
     void damaged(float damage)
@@ -81,38 +82,32 @@ public:
                 // cout << distanceY << endl;
             }
 
+            distance = sqrt(pow(distanceX, 2) + pow(distanceY, 2));
+
             sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
 
-            if (transform->velocity.y == 0 && transform->velocity.x == 0)
-            {
-                sprite->Play("pistol_idle");
-            }
-            else
-            {
-                sprite->Play("pistol_walk");
-            }
+            sprite->Play("pistol_idle");
 
-            if (nowMode == 0)
+            if (nowMode == 0 || distance <= 30)
             {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;
             }
             else if (nowMode == 1)
             {
-                if (sqrt(pow(distanceX, 2) + pow(distanceY, 2)) <= 80)
-                {
-                    transform->velocity.x = 0;
-                    transform->velocity.y = 0;
-                }
-                else
-                {
-                    transform->velocity.x = speed * (distanceX / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
-                    transform->velocity.y = speed * (distanceY / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
-                }
+                transform->velocity.x = speed * (distanceX / distance);
+                transform->velocity.y = speed * (distanceY / distance);
             }
         }
         destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
         destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
+
+        if (Game::event.type == SDL_KEYDOWN && Game::event.key.keysym.sym == SDLK_f && distance <= 100) {
+            if(nowMode == 0)
+                nowMode = 1;
+            else
+                nowMode = 0;
+        }
     }
 
     void draw() override
