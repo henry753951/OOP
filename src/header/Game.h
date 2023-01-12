@@ -23,6 +23,7 @@ class Game {
     void gameLoop();
     void handleEvents();
     void AddUI(std::string, int , int , int , int ,int , int , float);
+    void AddLabels(int, int, std::string, std::string, SDL_Color);
 
     int _screenWidth;
     int _screenHight;
@@ -48,6 +49,7 @@ class Game {
         groupBullets,
         groupHostages,
         groupUIs,
+        groupLabels,
     };
     Game();
     ~Game();

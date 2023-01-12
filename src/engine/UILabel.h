@@ -13,7 +13,6 @@ class UILabel : public Component {
     UILabel(int xpos, int ypos, std::string text, std::string font, SDL_Color& colour) : labelText(text), labelFont(font), textColour(colour) {
         position.x = xpos;
         position.y = ypos;
-
         SetLabelText(labelText, labelFont);
     }
     ~UILabel() {}
