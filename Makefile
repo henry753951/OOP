@@ -7,7 +7,7 @@
 CXX = g++
 
 # define any compile-time flags
-CXXFLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11
+CXXFLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -std=c++11
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
@@ -52,7 +52,7 @@ INCLUDES	:= $(patsubst %,-I%, $(INCLUDEDIRS:%/=%))
 LIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 
 # define the C source files
-SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS))) $(wildcard $(SRC)/engine/*.cpp) $(wildcard $(SRC)/engine/ECS/*.cpp) $(wildcard $(SRC)/tmxlite/*.cpp) $(wildcard $(SRC)/tmxlite/detail/*.cpp)
+SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS))) $(wildcard $(SRC)/engine/*.cpp) $(wildcard $(SRC)/engine/ECS/*.cpp)
 
 # define the C object files 
 OBJECTS		:= $(SOURCES:.cpp=.o)

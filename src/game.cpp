@@ -7,6 +7,7 @@
 #include "engine/AssetManager.h"
 #include "engine/Collision.h"
 #include "engine/Components.h"
+#include "engine/Raytrace.h"
 #include "engine/Vector2D.h"
 #include "header/Configuration.h"
 #include "header/Map.h"
@@ -36,8 +37,7 @@ SDL_Color white;
  *  遊戲建構子
  *  載入設定檔、讀入物件內
  */
-Game::Game()
-{
+Game::Game() {
     white.r = 255;
     white.g = 255;
     white.b = 255;
@@ -62,8 +62,7 @@ Game::~Game(){};
  *  遊戲主執行函式
  *  初始化視窗、render -> Game::init()
  */
-void Game::run()
-{
+void Game::run() {
     char WindowName[] = "Game";
 
     init(WindowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_SHOWN);
@@ -72,21 +71,20 @@ void Game::run()
     SDL_GetCurrentDisplayMode(0, &DM);
 
     // load WindowMode
-    switch (_windowMode)
-    {
-    case 0:
-        break;
-    case 1:
-        SDL_SetWindowSize(_window, DM.w, DM.h);
-        SDL_SetWindowBordered(_window, SDL_FALSE);
-        SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        break;
-    case 2:
-        SDL_SetWindowSize(_window, DM.w, DM.h);
-        SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN);
-        break;
-    default:
-        break;
+    switch (_windowMode) {
+        case 0:
+            break;
+        case 1:
+            SDL_SetWindowSize(_window, DM.w, DM.h);
+            SDL_SetWindowBordered(_window, SDL_FALSE);
+            SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+            break;
+        case 2:
+            SDL_SetWindowSize(_window, DM.w, DM.h);
+            SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN);
+            break;
+        default:
+            break;
     }
     Game::camera = {0, 0, DM.w, DM.h};
     gameLoop();
@@ -96,15 +94,13 @@ void Game::run()
  *  初始化視窗、render
  */
 
-void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
-{
+void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         std::cerr << "Error: Failed at SDL_Init()" << endl;
     _window = SDL_CreateWindow(title, x, y, w, h, flags);
     _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
     isRunning = true;
-    if (_renderer)
-    {
+    if (_renderer) {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
@@ -116,7 +112,6 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
     assets->AddTexture("HP", "Assets/Texture/HP.png");
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
-
 
     map = new Map("terrain", 1, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
@@ -139,8 +134,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     AddEnemy(700.0f, 640.0f, 100, 0.5);
     AddEnemy(800.0f, 700.0f, 100, 0);
     AddHostage(200.0f, 600.0f, 100, 1.5);
-    AddUI("HP",0,0,30,700,90,110,1);
-    AddUI("HPamount",0,0,30,780,100,520,1);
+    AddUI("HP", 0, 0, 30, 700, 90, 110, 1);
+    AddUI("HPamount", 0, 0, 30, 780, 100, 520, 1);
 }
 
 Uint32 frameStart;
@@ -148,8 +143,7 @@ Uint32 TimerStart;
 int TimerTime;
 int frameTime;
 
-void Game::AddEnemy(float srcX, float srcY, int hp, float speed)
-{
+void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
     auto &enemy(manager.addEntity());
     enemy.addComponent<TransformComponent>(srcX, srcY, 0.3);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
@@ -164,8 +158,7 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed)
     enemy.addGroup(groupEnemys);
 }
 
-void Game::AddHostage(float srcX, float srcY, int hp, float speed)
-{
+void Game::AddHostage(float srcX, float srcY, int hp, float speed) {
     auto &hostage(manager.addEntity());
     hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
@@ -180,44 +173,37 @@ void Game::AddHostage(float srcX, float srcY, int hp, float speed)
     hostage.addGroup(groupHostages);
 }
 
-void Game::AddUI(std::string n,int srcX, int srcY, int xpos, int ypos, int htsize, int wtsize, float tscale)
-{
+void Game::AddUI(std::string n, int srcX, int srcY, int xpos, int ypos, int htsize, int wtsize, float tscale) {
     auto &UI(manager.addEntity());
     UI.addComponent<UIComponent>(n, srcX, srcY, xpos, ypos, htsize, wtsize, tscale);
     UI.addGroup(groupUIs);
 }
 
-void Game::gameLoop()
-{
-    while (_gameState != GameState::EXIT)
-    {
+void Game::gameLoop() {
+    while (_gameState != GameState::EXIT) {
         frameStart = SDL_GetTicks();
         handleEvents();
         update();
         render();
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime)
-        {
+        if (frameDelay > frameTime) {
             SDL_Delay(frameDelay - frameTime);
         }
     }
     quit();
 }
 
-void Game::handleEvents()
-{
+void Game::handleEvents() {
     SDL_PollEvent(&event);
-    switch (event.type)
-    {
-    case SDL_QUIT:
-        isRunning = false;
-        _gameState = GameState::EXIT;
-        break;
+    switch (event.type) {
+        case SDL_QUIT:
+            isRunning = false;
+            _gameState = GameState::EXIT;
+            break;
     }
 }
 
-void Game::update()
-{
+void Game::update() {
     SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = player.getComponent<TransformComponent>().position;
 
@@ -227,18 +213,14 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    for (auto &c : colliders)
-    {
+    for (auto &c : colliders) {
         SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-        if (Collision::AABB(cCol, playerCol))
-        {
+        if (Collision::AABB(cCol, playerCol)) {
             player.getComponent<TransformComponent>().position = playerPos;
         }
-        for (auto &b : bullets)
-        {
+        for (auto &b : bullets) {
             Vector2D pos = (*b).getComponent<BulletComponent>().position;
-            if (Collision::AABB(cCol, pos))
-            {
+            if (Collision::AABB(cCol, pos)) {
                 b->getComponent<BulletComponent>().~BulletComponent();
             }
             //     for (auto &e : enemys) {
@@ -265,43 +247,34 @@ void Game::update()
         camera.y = camera.h;
 }
 
-void Game::render()
-{
+void Game::render() {
     SDL_RenderClear(_renderer);
-    for (auto &t : tiles)
-    {
+    for (auto &t : tiles) {
         t->draw();
     }
-    for (auto &C : colliders)
-    {
+    for (auto &C : colliders) {
         C->draw();
     }
-    for (auto &e : enemys)
-    {
+    for (auto &e : enemys) {
         e->draw();
     }
-    for (auto &h : hostages)
-    {
+    for (auto &h : hostages) {
         h->draw();
     }
-    for (auto &b : bullets)
-    {
+    for (auto &b : bullets) {
         b->draw();
     }
-    for (auto &p : players)
-    {
+    for (auto &p : players) {
         p->draw();
     }
-    for (auto &u : UIs)
-    {
+    for (auto &u : UIs) {
         u->draw();
     }
     label.draw();
 
     SDL_RenderPresent(_renderer);
 }
-void Game::quit()
-{
+void Game::quit() {
     SDL_DestroyWindow(_window);
     SDL_DestroyRenderer(_renderer);
     SDL_Quit();
