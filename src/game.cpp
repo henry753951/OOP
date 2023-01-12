@@ -31,6 +31,7 @@ auto &enemys(manager.getGroup(Game::groupEnemys));
 auto &hostages(manager.getGroup(Game::groupHostages));
 auto &bullets(manager.getGroup(Game::groupBullets));
 auto &UIs(manager.getGroup(Game::groupUIs));
+auto &labels(manager.getGroup(Game::groupLabels));
 SDL_Color white;
 /**
  *  遊戲建構子
@@ -108,6 +109,10 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
+    if(TTF_Init()==-1){
+        cout << "error" << endl;
+    }
+
     assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
@@ -116,7 +121,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
     assets->AddTexture("HP", "Assets/Texture/HP.png");
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
-
+    assets->AddTexture("white", "Assets/Texture/white.png");
+    assets->AddFont("Cubic","Assets/Font/Cubic_11_1.013_R.ttf",50);
 
     map = new Map("terrain", 1, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
@@ -136,11 +142,18 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     player.addComponent<PlayerStatComponent>(100);
     player.addGroup(groupPlayers);
 
+    SDL_Color black = {0,0,0,255};
+
     AddEnemy(700.0f, 640.0f, 100, 0.5);
     AddEnemy(800.0f, 700.0f, 100, 0);
     AddHostage(200.0f, 600.0f, 100, 1.5);
-    AddUI("HP",0,0,30,700,90,110,1);
+    AddUI("white",0,0,30,700,90,110,1);
     AddUI("HPamount",0,0,30,780,100,520,1);
+    AddUI("white",0,0,50,50,50,810,1);
+    AddUI("white",0,0,1300,765,90,300,1);
+    AddLabels(60, 50, "MISSION: RESCUE THE HOSTAGES", "Cubic", black);
+    AddLabels(50, 715, "HP", "Cubic", black);
+    AddLabels(1360, 780, "BULLETS", "Cubic", black);
 }
 
 Uint32 frameStart;
@@ -187,6 +200,14 @@ void Game::AddUI(std::string n,int srcX, int srcY, int xpos, int ypos, int htsiz
     UI.addGroup(groupUIs);
 }
 
+void Game::AddLabels(int X, int Y, std::string content,std::string font,SDL_Color colour)
+{
+    auto &label(manager.addEntity());
+    label.addComponent<UILabel>(X, Y, content, font, colour);
+    label.addGroup(groupLabels);
+}
+
+
 void Game::gameLoop()
 {
     while (_gameState != GameState::EXIT)
@@ -220,9 +241,11 @@ void Game::update()
 {
     SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
     Vector2D playerPos = player.getComponent<TransformComponent>().position;
+    int clips = player.getComponent<KeyboardController>().clip;
 
     std::stringstream ss;
-    ss << "Player position: " << playerPos;
+    ss << clips << "/15";
+    labels[2]->getComponent<UILabel>().SetLabelText(ss.str(),"Cubic");
 
     manager.refresh();
     manager.update();
@@ -296,7 +319,10 @@ void Game::render()
     {
         u->draw();
     }
-    label.draw();
+    for (auto &l : labels)
+    {
+        l->draw();
+    }
 
     SDL_RenderPresent(_renderer);
 }
