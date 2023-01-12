@@ -1,4 +1,5 @@
 #include "header/Game.h"
+#include <SDL2/SDL_mixer.h>
 // hi
 #include <iostream>
 #include <sstream>
@@ -11,6 +12,7 @@
 #include "engine/Vector2D.h"
 #include "header/Configuration.h"
 #include "header/Map.h"
+
 using std::cin;
 using std::cout;
 using std::endl;
@@ -21,6 +23,7 @@ Manager manager;
 AssetManager *Game::assets = new AssetManager(&manager);
 SDL_Renderer *Game::_renderer = nullptr;
 SDL_Event Game::event;
+Mix_Music *gMusic = NULL;
 bool Game::isRunning = false;
 auto &player(manager.addEntity());
 auto &label(manager.addEntity());
@@ -106,8 +109,20 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     }
 
     if(TTF_Init()==-1){
-        cout << "error" << endl;
+        cout << "TTF could not initialize!" << endl;
     }
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
+    {
+        printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+    }
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+    {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    }
+
+    gMusic = Mix_LoadMUS( "Assets/Audio/background_ambient.mp3" );
+
+    Mix_PlayMusic( gMusic, -1 );
 
     assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
@@ -304,4 +319,6 @@ void Game::quit() {
     SDL_DestroyWindow(_window);
     SDL_DestroyRenderer(_renderer);
     SDL_Quit();
+    Mix_FreeMusic( gMusic );
+    gMusic = NULL;
 }
