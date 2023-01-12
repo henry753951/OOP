@@ -123,7 +123,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     gMusic = Mix_LoadMUS( "Assets/Audio/background_ambient.mp3" );
 
     Mix_PlayMusic( gMusic, -1 );
-
+    assets->AddTexture("hostage", "Assets/Texture/hostage.png");
     assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
@@ -193,13 +193,13 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
 void Game::AddHostage(float srcX, float srcY, int hp, float speed) {
     auto &hostage(manager.addEntity());
     hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
-    Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
-    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
-    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
-    Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+    // Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
+    // Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
+    // Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    // Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
 
-    std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
-    hostage.addComponent<SpriteComponent>(ids, true);
+    // std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
+    // hostage.addComponent<SpriteComponent>(ids, true);
     hostage.addComponent<HostageController>(true, hp, 0, speed);
     hostage.addComponent<ColliderComponent>("hostage");
     hostage.addGroup(groupHostages);

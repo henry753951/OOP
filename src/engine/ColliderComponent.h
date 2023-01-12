@@ -64,10 +64,10 @@ class ColliderComponent : public Component {
             destR.w = collider.w;
         }
         if (tag == "hostage") {
-            collider.x = static_cast<int>(transform->position.x + (entity->getComponent<SpriteComponent>().destRect.w * -1) / 2);
-            collider.y = static_cast<int>(transform->position.y + (entity->getComponent<SpriteComponent>().destRect.h * -1) / 2);
-            collider.w = entity->getComponent<SpriteComponent>().destRect.w * 2;
-            collider.h = entity->getComponent<SpriteComponent>().destRect.h * 2;
+            // collider.x = static_cast<int>(transform->position.x + (entity->getComponent<SpriteComponent>().destRect.w * -1) / 2);
+            // collider.y = static_cast<int>(transform->position.y + (entity->getComponent<SpriteComponent>().destRect.h * -1) / 2);
+            // collider.w = entity->getComponent<SpriteComponent>().destRect.w * 2;
+            // collider.h = entity->getComponent<SpriteComponent>().destRect.h * 2;
             destR.h = collider.h;
             destR.w = collider.w;
         }
