@@ -1,5 +1,6 @@
 #pragma once
 #include "engine/Components.h"
+#include "engine/EnemyController.h"
 #include "engine/ECS/ECS.h"
 #include "engine/TextureManager.h"
 #include "engine/Vector2D.h"
@@ -51,8 +52,8 @@ class BulletComponent : public Component {
         destRect.y = static_cast<int>(position.y - static_cast<float>(Game::camera.y));
         auto& enemys(manager.getGroup(Game::groupEnemys));
         for (auto &e : enemys) {
-            if (Collision::AABB(e->getComponent<ColliderComponent>().collider, position)) {
-                // b->getComponent<BulletComponent>().Damaging(e);
+            if (Collision::AABB(e->getComponent<ColliderComponent>().collider, position) && e->getComponent<EnemyController>().DeadorAlive == true) {
+                e->getComponent<EnemyController>().damaged(30);
                 std::cout << "hit" << std::endl;
                 delete this;
                 break;
@@ -61,7 +62,7 @@ class BulletComponent : public Component {
 
     }
     void draw() override {
-        SDL_SetRenderDrawColor(Game::_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_SetRenderDrawColor(Game::_renderer, 252, 252, 3, 0xFF);
         SDL_RenderDrawLine(Game::_renderer, destRect.x, destRect.y, destRect.x + vec.x * 2, destRect.y + vec.y * 2);
         SDL_SetRenderDrawColor(Game::_renderer, 0x00, 0x00, 0x00, 0x00);
     }

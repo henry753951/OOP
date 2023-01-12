@@ -19,8 +19,10 @@ class Game {
    private:
     void init(const char* title, int x, int y, int w, int h, Uint32 flags);
     void AddEnemy(float,float,int,float);
+    void AddHostage(float,float,int,float);
     void gameLoop();
     void handleEvents();
+    void wait(int);
 
     int _screenWidth;
     int _screenHight;
@@ -44,6 +46,7 @@ class Game {
         groupColliders,
         groupEnemys,
         groupBullets,
+        groupHostages,
     };
     Game();
     ~Game();

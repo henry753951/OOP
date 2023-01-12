@@ -28,6 +28,7 @@ auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
 auto &colliders(manager.getGroup(Game::groupColliders));
 auto &enemys(manager.getGroup(Game::groupEnemys));
+auto &hostages(manager.getGroup(Game::groupHostages));
 auto &bullets(manager.getGroup(Game::groupBullets));
 SDL_Color white;
 /**
@@ -106,6 +107,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
+    assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
     assets->AddTexture("pistol_idle", "Assets/Texture/spritesheets/player/pistol/pistol_idle.png");
     assets->AddTexture("pistol_fire", "Assets/Texture/spritesheets/player/pistol/pistol_fire.png");
@@ -120,8 +122,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
 
     player.addComponent<TransformComponent>(800.0f, 640.0f, 0.3);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
-    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
-    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    Animation pistol_fire = Animation("pistol_fire", 262, 218, 0, 3, 30);
+    Animation pistol_reload = Animation("pistol_reload", 262, 231, 0, 15, 60);
     Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
     std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
     player.addComponent<SpriteComponent>(ids, true);
@@ -129,11 +131,14 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     player.addComponent<ColliderComponent>("player");
     player.addGroup(groupPlayers);
 
-    // AddEnemy(700.0f, 640.0f, 100, 0.3);
-    AddEnemy(800.0f, 800.0f, 100, 0);
+    AddEnemy(700.0f, 640.0f, 100, 0.5);
+    AddEnemy(800.0f, 700.0f, 100, 0);
+    AddHostage(200.0f, 600.0f, 100, 1.5);
 }
 
 Uint32 frameStart;
+Uint32 TimerStart;
+int TimerTime;
 int frameTime;
 
 void Game::AddEnemy(float srcX, float srcY, int hp, float speed)
@@ -147,9 +152,25 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed)
 
     std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
     enemy.addComponent<SpriteComponent>(ids, true);
-    enemy.addComponent<EnemyController>(true, hp, 0, speed);
+    enemy.addComponent<EnemyController>(true, hp, 1, speed);
     enemy.addComponent<ColliderComponent>("enemy");
     enemy.addGroup(groupEnemys);
+}
+
+void Game::AddHostage(float srcX, float srcY, int hp, float speed)
+{
+    auto &hostage(manager.addEntity());
+    hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
+    Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
+    Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
+    Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
+    Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
+
+    std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
+    hostage.addComponent<SpriteComponent>(ids, true);
+    hostage.addComponent<HostageController>(true, hp, 0, speed);
+    hostage.addComponent<ColliderComponent>("hostage");
+    hostage.addGroup(groupHostages);
 }
 
 void Game::gameLoop()
@@ -244,6 +265,10 @@ void Game::render()
     for (auto &e : enemys)
     {
         e->draw();
+    }
+    for (auto &h : hostages)
+    {
+        h->draw();
     }
     for (auto &b : bullets)
     {

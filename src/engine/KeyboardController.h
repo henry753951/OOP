@@ -17,6 +17,9 @@ class KeyboardController : public Component {
    public:
     TransformComponent *transform;
     SpriteComponent *sprite;
+    int timer = 0;
+    int timer2 = 0;
+    int clip = 15;
 
     void init() override {
         transform = &entity->getComponent<TransformComponent>();
@@ -28,11 +31,29 @@ class KeyboardController : public Component {
         int mousePosY = 0;
         SDL_GetMouseState(&mousePosX, &mousePosY);
 
-        if (transform->velocity.y == 0 && transform->velocity.x == 0) {
-            sprite->Play("pistol_idle");
-        } else {
-            sprite->Play("pistol_walk");
+        if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
+            switch (Game::event.button.button) {
+                case SDL_BUTTON_LEFT:
+                    if(clip > 0 && SDL_GetTicks() - timer2 >= 900){
+                        fire(mousePosX, mousePosY);
+                        sprite->Play("pistol_fire");
+                        timer = SDL_GetTicks();
+                    }
+                    break;
+                case SDL_BUTTON_RIGHT:
+                    break;
+                default:
+                    break;
+            }
         }
+        if(SDL_GetTicks() - timer >= 90 && SDL_GetTicks() - timer2 >= 900){
+            if (transform->velocity.y == 0 && transform->velocity.x == 0) {
+                sprite->Play("pistol_idle");
+            } else {
+                sprite->Play("pistol_walk");
+            }
+        }
+
         if (Game::event.type == SDL_KEYDOWN) {
             switch (Game::event.key.keysym.sym) {
                 case SDLK_w:
@@ -50,6 +71,13 @@ class KeyboardController : public Component {
                 case SDLK_LSHIFT:
                     transform->speed = 5;
                     sprite->speed = 150;
+                    break;
+                case SDLK_r:
+                    if(clip < 15){
+                        sprite->Play("pistol_reload");
+                        timer2 = SDL_GetTicks();
+                        clip = 15;
+                    }
                     break;
                 default:
                     break;
@@ -80,20 +108,10 @@ class KeyboardController : public Component {
                     break;
             }
         }
-        if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
-            switch (Game::event.button.button) {
-                case SDL_BUTTON_LEFT:
-                    fire(mousePosX, mousePosY);
-                    break;
-                case SDL_BUTTON_RIGHT:
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
     void fire(int x, int y) {
+        clip--;
         double playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
         double playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 
