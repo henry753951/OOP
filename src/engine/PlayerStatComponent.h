@@ -15,8 +15,10 @@ using std::vector;
 
 class PlayerStatComponent : public Component
 {
-public:
+private:
 
+public:
+    SDL_Rect rect;
     bool DeadorAlive;
     int healthPoint;
 
@@ -28,7 +30,10 @@ public:
 
     void init() override
     {
-
+        rect.x = 60;
+        rect.y = 800;
+        rect.w = 460;
+        rect.h = 50;
     }
 
     void damaged(float damage)
@@ -38,6 +43,13 @@ public:
 
     void update() override
     {
+        rect.w = healthPoint*4.6;
+    }
 
+    void draw() override
+    {
+        SDL_SetRenderDrawColor(Game::_renderer, 252, 10, 80, 0xFF);
+        SDL_RenderFillRect(Game::_renderer,&rect);
+        SDL_SetRenderDrawColor(Game::_renderer, 0x00, 0x00, 0x00, 0x00);
     }
 };

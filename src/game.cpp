@@ -115,7 +115,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags)
     assets->AddTexture("pistol_reload", "Assets/Texture/spritesheets/player/pistol/pistol_reload.png");
     assets->AddTexture("pistol_walk", "Assets/Texture/spritesheets/player/pistol/pistol_walk.png");
     assets->AddTexture("HP", "Assets/Texture/HP.png");
-    assets->AddTexture("HPamount", "Assets/Texture/HPamount3.png");
+    assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
 
 
     map = new Map("terrain", 1, 32);

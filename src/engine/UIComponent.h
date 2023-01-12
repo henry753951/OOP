@@ -46,7 +46,6 @@ class UIComponent : public Component {
         // float deltaY;
         // deltaX = *(&entity->getComponent<TransformComponent>().position.x) + *(&entity->getComponent<SpriteComponent>().destRect.w) / 2 - Game::camera.x - x;
         // deltaY = *(&entity->getComponent<TransformComponent>().position.y) + *(&entity->getComponent<SpriteComponent>().destRect.h) / 2 - Game::camera.y - y;
-
     }
     void draw() override {
         TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
