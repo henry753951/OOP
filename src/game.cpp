@@ -26,8 +26,10 @@ SDL_Renderer *Game::_renderer = nullptr;
 SDL_Event Game::event;
 Mix_Music *gMusic = NULL;
 bool Game::isRunning = false;
+std::string GState = "menu";
 auto &player(manager.addEntity());
 auto &label(manager.addEntity());
+auto &headUI(manager.addEntity());
 
 auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
@@ -132,6 +134,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("HP", "Assets/Texture/HP.png");
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
     assets->AddTexture("white", "Assets/Texture/white.png");
+    assets->AddTexture("head", "Assets/Texture/Head.png");
     assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
 
     map = new Map("terrain", 2, 32);
@@ -171,6 +174,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     // debug
     AddLabels(50, 200, "", "Cubic", white);
     AddLabels(50, 400, "", "Cubic", white);
+    headUI.addComponent<UIComponent>("head", 0, 0, 10, 10, 900, 1600, 1);
 }
 
 Uint32 frameStart;
@@ -245,8 +249,6 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    if (GameState == "menu") {
-    } else if (GameState == "inGame") {
         SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
         Vector2D playerPos = player.getComponent<TransformComponent>().position;
         int clips = player.getComponent<KeyboardController>().clip;
@@ -268,14 +270,6 @@ void Game::update() {
                 if (Collision::AABB(cCol, pos)) {
                     b->getComponent<BulletComponent>().~BulletComponent();
                 }
-                //     for (auto &e : enemys) {
-                //     SDL_Rect eCol = (*e).getComponent<ColliderComponent>().collider;
-                //     if (Collision::AABB(eCol, pos)) {
-                //         // b->getComponent<BulletComponent>().Damaging(e);
-                //         std::cout << "hit" << std::endl;
-                //         delete this;
-                //     }
-                // }
             }
         }
 
@@ -290,16 +284,14 @@ void Game::update() {
             camera.x = camera.w;
         if (camera.y > camera.h)
             camera.y = camera.h;
-    }
+
+        if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
+            headUI.getComponent<UIComponent>().visible = false;
+        }
 }
 
 void Game::render() {
     SDL_RenderClear(_renderer);
-    if (GameState == "menu") {
-        for (auto &u : UIs) {
-            u->draw();
-        }
-    } else if (GameState == "inGame") {
         for (auto &t : tiles) {
             t->draw();
         }
@@ -324,8 +316,7 @@ void Game::render() {
         for (auto &l : labels) {
             l->draw();
         }
-    }
-
+        headUI.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
