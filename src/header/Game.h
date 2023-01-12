@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <string>
 
 #include "../engine/AssetManager.h"
 #include "../engine/TextureManager.h"
@@ -18,11 +19,11 @@ enum class GameState {
 class Game {
    private:
     void init(const char* title, int x, int y, int w, int h, Uint32 flags);
-    void AddEnemy(float,float,int,float);
-    void AddHostage(float,float,int,float);
+    void AddEnemy(float, float, int, float);
+    void AddHostage(float, float, int, float);
     void gameLoop();
     void handleEvents();
-    void AddUI(std::string, int , int , int , int ,int , int , float);
+    void AddUI(std::string, int, int, int, int, int, int, float);
     void AddLabels(int, int, std::string, std::string, SDL_Color);
 
     int _screenWidth;
@@ -32,6 +33,7 @@ class Game {
     GameState _gameState;
 
    public:
+    std::string GameState = "menu";
     SDL_Window* _window;
     static AssetManager* assets;
     static SDL_Renderer* _renderer;

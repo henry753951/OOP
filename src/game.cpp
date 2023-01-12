@@ -1,4 +1,5 @@
 #include "header/Game.h"
+
 #include <SDL2/SDL_mixer.h>
 // hi
 #include <iostream>
@@ -108,21 +109,19 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
         SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
     }
 
-    if(TTF_Init()==-1){
+    if (TTF_Init() == -1) {
         cout << "TTF could not initialize!" << endl;
     }
-    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
-    {
-        printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+        printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError());
     }
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
-    {
-        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
 
-    gMusic = Mix_LoadMUS( "Assets/Audio/background_ambient.mp3" );
+    gMusic = Mix_LoadMUS("Assets/Audio/background_ambient.mp3");
 
-    Mix_PlayMusic( gMusic, -1 );
+    Mix_PlayMusic(gMusic, -1);
     assets->AddTexture("hostage", "Assets/Texture/hostage.png");
     assets->AddTexture("blood", "Assets/Texture/blood_pool.png");
     assets->AddTexture("crosshair", "Assets/Texture/crosshair.png");
@@ -196,12 +195,11 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
 
 void Game::AddHostage(float srcX, float srcY, int hp, float speed) {
     auto &hostage(manager.addEntity());
-  hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
+    hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
     // Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     // Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     // Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
     // Animation pistol_walk = Animation("pistol_walk", 260, 222, 0, 20, 150);
-
 
     // std::vector<Animation> ids = {pistol_idle, pistol_fire, pistol_reload, pistol_walk};
     // hostage.addComponent<SpriteComponent>(ids, true);
@@ -247,76 +245,85 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-    SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
-    Vector2D playerPos = player.getComponent<TransformComponent>().position;
-    int clips = player.getComponent<KeyboardController>().clip;
+    if (GameState == "menu") {
+    } else if (GameState == "inGame") {
+        SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+        Vector2D playerPos = player.getComponent<TransformComponent>().position;
+        int clips = player.getComponent<KeyboardController>().clip;
 
-    std::stringstream ss;
-    ss << clips << "/15";
-    labels[2]->getComponent<UILabel>().SetLabelText(ss.str(), "Cubic");
+        std::stringstream ss;
+        ss << clips << "/15";
+        labels[2]->getComponent<UILabel>().SetLabelText(ss.str(), "Cubic");
 
-    manager.refresh();
-    manager.update();
+        manager.refresh();
+        manager.update();
 
-    for (auto &c : colliders) {
-        SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-        if (Collision::AABB(cCol, playerCol)) {
-            player.getComponent<TransformComponent>().position = playerPos;
-        }
-        for (auto &b : bullets) {
-            Vector2D pos = (*b).getComponent<BulletComponent>().position;
-            if (Collision::AABB(cCol, pos)) {
-                b->getComponent<BulletComponent>().~BulletComponent();
+        for (auto &c : colliders) {
+            SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+            if (Collision::AABB(cCol, playerCol)) {
+                player.getComponent<TransformComponent>().position = playerPos;
             }
-            //     for (auto &e : enemys) {
-            //     SDL_Rect eCol = (*e).getComponent<ColliderComponent>().collider;
-            //     if (Collision::AABB(eCol, pos)) {
-            //         // b->getComponent<BulletComponent>().Damaging(e);
-            //         std::cout << "hit" << std::endl;
-            //         delete this;
-            //     }
-            // }
+            for (auto &b : bullets) {
+                Vector2D pos = (*b).getComponent<BulletComponent>().position;
+                if (Collision::AABB(cCol, pos)) {
+                    b->getComponent<BulletComponent>().~BulletComponent();
+                }
+                //     for (auto &e : enemys) {
+                //     SDL_Rect eCol = (*e).getComponent<ColliderComponent>().collider;
+                //     if (Collision::AABB(eCol, pos)) {
+                //         // b->getComponent<BulletComponent>().Damaging(e);
+                //         std::cout << "hit" << std::endl;
+                //         delete this;
+                //     }
+                // }
+            }
         }
+
+        camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - DM.w / 2 + 256);
+        camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - DM.h / 2 + 128);
+
+        if (camera.x < 0)
+            camera.x = 0;
+        if (camera.y < 0)
+            camera.y = 0;
+        if (camera.x > camera.w)
+            camera.x = camera.w;
+        if (camera.y > camera.h)
+            camera.y = camera.h;
     }
-
-    camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - DM.w / 2 + 256);
-    camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - DM.h / 2 + 128);
-
-    if (camera.x < 0)
-        camera.x = 0;
-    if (camera.y < 0)
-        camera.y = 0;
-    if (camera.x > camera.w)
-        camera.x = camera.w;
-    if (camera.y > camera.h)
-        camera.y = camera.h;
 }
 
 void Game::render() {
     SDL_RenderClear(_renderer);
-    for (auto &t : tiles) {
-        t->draw();
-    }
-    for (auto &C : colliders) {
-        C->draw();
-    }
-    for (auto &e : enemys) {
-        e->draw();
-    }
-    for (auto &h : hostages) {
-        h->draw();
-    }
-    for (auto &b : bullets) {
-        b->draw();
-    }
-    for (auto &p : players) {
-        p->draw();
-    }
-    for (auto &u : UIs) {
-        u->draw();
-    }
-    for (auto &l : labels) {
-        l->draw();
+    if (GameState == "menu") {
+        for (auto &u : UIs) {
+            u->draw();
+        }
+    } else if (GameState == "inGame") {
+        for (auto &t : tiles) {
+            t->draw();
+        }
+        for (auto &C : colliders) {
+            C->draw();
+        }
+        for (auto &e : enemys) {
+            e->draw();
+        }
+        for (auto &h : hostages) {
+            h->draw();
+        }
+        for (auto &b : bullets) {
+            b->draw();
+        }
+        for (auto &p : players) {
+            p->draw();
+        }
+        for (auto &u : UIs) {
+            u->draw();
+        }
+        for (auto &l : labels) {
+            l->draw();
+        }
     }
 
     SDL_RenderPresent(_renderer);
@@ -325,6 +332,6 @@ void Game::quit() {
     SDL_DestroyWindow(_window);
     SDL_DestroyRenderer(_renderer);
     SDL_Quit();
-    Mix_FreeMusic( gMusic );
+    Mix_FreeMusic(gMusic);
     gMusic = NULL;
 }

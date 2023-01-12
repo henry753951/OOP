@@ -15,20 +15,20 @@ class RayTrace {
         bool through = true;
         for (auto& c : entitys) {
             auto Collider = (c->getComponent<ColliderComponent>().collider);
-
+            int i=0;
             // 玩家在敵人右上角
             if (x < x2 && y > y2) {
                 if (((Collider.x > x && Collider.y < y) && (Collider.x < x2 && Collider.y > y2))) {
-                    return false;
+                    i++;
                 }
                 if (((Collider.x + Collider.w > x && Collider.y < y) && (Collider.x + Collider.w < x2 && Collider.y < y2))) {
-                    return false;
+                    i++;
                 }
                 if (((Collider.x > x && Collider.y + Collider.h < y) && (Collider.x < x2 && Collider.y + Collider.h < y2))) {
-                    return false;
+                    i++;
                 }
                 if (((Collider.x + Collider.w > x && Collider.y + Collider.h < y) && (Collider.x + Collider.w < x2 && Collider.y + Collider.h < y2))) {
-                    return false;
+                    i++;
                 }
                 // 玩家在敵人左下角
             } else if (x > x2 && y < y2) {
