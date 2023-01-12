@@ -76,12 +76,11 @@ class EnemyController : public Component {
                 // cout << distanceY << endl;
             }
             // 若不再玩家視線 則return visable = false
-            RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy));
-            // if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
-            //     visable = false;
-            //     std::cout << "hi\n";
-            //     return;
-            // }
+            if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
+                visable = false;
+                std::cout << "hide\n";
+                return;
+            }
             visable = true;
 
             sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
