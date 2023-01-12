@@ -1,4 +1,7 @@
 #pragma once
+#include <sstream>
+
+#include "../BulletComponent.h"
 #include "../header/Game.h"
 #include "Components.h"
 #include "ECS/ECS.h"
@@ -6,6 +9,8 @@
 #include "SpriteComponent.h"
 #include "TextureManager.h"
 #include "TransformComponent.h"
+#include "UILabel.h"
+class BulletComponent;
 
 extern Manager manager;
 using std::cin;
@@ -32,7 +37,6 @@ class EnemyController : public Component {
     float speed;
     float nowx, nowy;
     int offset;
-    bool visable = true;
 
     EnemyController(bool DoA, int hp, int m, float s) {
         DeadorAlive = DoA;
@@ -40,7 +44,19 @@ class EnemyController : public Component {
         nowMode = m;
         speed = s;
     }
+    void fire(int x, int y) {
+        int playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
+        int playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 
+        double distanceX = x + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2) - playerPositionX;
+        double distanceY = y + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2) - playerPositionY;
+        double vecX = distanceX / sqrt(distanceX * distanceX + distanceY * distanceY);
+        double vecY = distanceY / sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        auto &bullet(manager.addEntity());
+        bullet.addComponent<BulletComponent>(playerPositionX, playerPositionY, vecX, vecY, "player");
+        bullet.addGroup(Game::groupBullets);
+    }
     void init() override {
         colliders = manager.getGroup(Game::groupColliders);
         players = manager.getGroup(Game::groupPlayers);
@@ -76,41 +92,49 @@ class EnemyController : public Component {
                 // cout << distanceY << endl;
             }
             // 若不再玩家視線 則return visable = false
+            auto &labels(manager.getGroup(Game::groupLabels));
+
+            std::stringstream str;
+            str << transform->position.x << " , " << transform->position.y;
+            labels[3]->getComponent<UILabel>().SetLabelText(str.str(), "Cubic");
+            std::stringstream str_;
+            str_ << nowx << " , " << nowy;
+            labels[4]->getComponent<UILabel>().SetLabelText(str_.str(), "Cubic");
             if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
-                visable = false;
-                std::cout << "hide\n";
-                return;
-            }
-            visable = true;
-
-            sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
-
-            if (transform->velocity.y == 0 && transform->velocity.x == 0) {
-                sprite->Play("pistol_idle");
-            } else {
-                sprite->Play("pistol_walk");
-            }
-
-            if (nowMode == 0) {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;
-            } else if (nowMode == 1) {
-                if (sqrt(pow(distanceX, 2) + pow(distanceY, 2)) <= 80) {
+            } else {
+                std::cout << "no Blocked" << std::endl;
+                sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
+
+                fire(nowx, nowy);
+
+                if (transform->velocity.y == 0 && transform->velocity.x == 0) {
+                    sprite->Play("pistol_idle");
+                } else {
+                    sprite->Play("pistol_walk");
+                }
+
+                if (nowMode == 0) {
                     transform->velocity.x = 0;
                     transform->velocity.y = 0;
-                } else {
-                    transform->velocity.x = speed * (distanceX / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
-                    transform->velocity.y = speed * (distanceY / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                } else if (nowMode == 1) {
+                    if (sqrt(pow(distanceX, 2) + pow(distanceY, 2)) <= 80) {
+                        transform->velocity.x = 0;
+                        transform->velocity.y = 0;
+                    } else {
+                        transform->velocity.x = speed * (distanceX / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                        transform->velocity.y = speed * (distanceY / sqrt(pow(distanceX, 2) + pow(distanceY, 2)));
+                    }
                 }
             }
         }
+
         destRect.x = static_cast<int>(transform->position.x - Game::camera.x);
         destRect.y = static_cast<int>(transform->position.y - Game::camera.y);
     }
 
     void draw() override {
-        if (visable) {
-            TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
-        }
+        TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
     }
 };

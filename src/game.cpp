@@ -133,7 +133,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("HP", "Assets/Texture/HP.png");
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
     assets->AddTexture("white", "Assets/Texture/white.png");
-    assets->AddFont("Cubic","Assets/Font/Cubic_11_1.013_R.ttf",50);
+    assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
 
     map = new Map("terrain", 1, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
@@ -153,18 +153,21 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     player.addComponent<PlayerStatComponent>(100);
     player.addGroup(groupPlayers);
 
-    SDL_Color black = {0,0,0,255};
+    SDL_Color black = {0, 0, 0, 255};
 
     AddEnemy(700.0f, 640.0f, 100, 0.5);
-    AddEnemy(800.0f, 700.0f, 100, 0);
+    // AddEnemy(800.0f, 700.0f, 100, 0);
     AddHostage(200.0f, 600.0f, 100, 1.5);
-    AddUI("white",0,0,30,700,90,110,1);
-    AddUI("HPamount",0,0,30,780,100,520,1);
-    AddUI("white",0,0,50,50,50,810,1);
-    AddUI("white",0,0,1300,765,90,300,1);
+    AddUI("white", 0, 0, 30, 700, 90, 110, 1);
+    AddUI("HPamount", 0, 0, 30, 780, 100, 520, 1);
+    AddUI("white", 0, 0, 50, 50, 50, 810, 1);
+    AddUI("white", 0, 0, 1300, 765, 90, 300, 1);
     AddLabels(60, 50, "MISSION: RESCUE THE HOSTAGES", "Cubic", black);
     AddLabels(50, 715, "HP", "Cubic", black);
     AddLabels(1360, 780, "BULLETS", "Cubic", black);
+    // debug
+    AddLabels(50, 200, "", "Cubic", white);
+    AddLabels(50, 400, "", "Cubic", white);
 }
 
 Uint32 frameStart;
@@ -208,8 +211,7 @@ void Game::AddUI(std::string n, int srcX, int srcY, int xpos, int ypos, int htsi
     UI.addGroup(groupUIs);
 }
 
-void Game::AddLabels(int X, int Y, std::string content,std::string font,SDL_Color colour)
-{
+void Game::AddLabels(int X, int Y, std::string content, std::string font, SDL_Color colour) {
     auto &label(manager.addEntity());
     label.addComponent<UILabel>(X, Y, content, font, colour);
     label.addGroup(groupLabels);
@@ -246,7 +248,7 @@ void Game::update() {
 
     std::stringstream ss;
     ss << clips << "/15";
-    labels[2]->getComponent<UILabel>().SetLabelText(ss.str(),"Cubic");
+    labels[2]->getComponent<UILabel>().SetLabelText(ss.str(), "Cubic");
 
     manager.refresh();
     manager.update();
@@ -308,8 +310,7 @@ void Game::render() {
     for (auto &u : UIs) {
         u->draw();
     }
-    for (auto &l : labels)
-    {
+    for (auto &l : labels) {
         l->draw();
     }
 
