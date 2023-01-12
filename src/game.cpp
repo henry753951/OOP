@@ -87,7 +87,7 @@ void Game::run() {
         default:
             break;
     }
-    Game::camera = {0, 0, DM.w, DM.h};
+    Game::camera = {0, 0, 6000, 6000};
     gameLoop();
 }
 
@@ -120,13 +120,13 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("white", "Assets/Texture/white.png");
     assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
 
-    map = new Map("terrain", 1, 32);
+    map = new Map("terrain", 2, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);
     // label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
     player.addComponent<AimComponent>(0, 0, 0, 0, 200, 0.1);
 
-    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.3);
+    player.addComponent<TransformComponent>(800.0f, 640.0f, 0.6);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 262, 218, 0, 3, 30);
     Animation pistol_reload = Animation("pistol_reload", 262, 231, 0, 15, 60);
@@ -140,9 +140,13 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
 
     SDL_Color black = {0, 0, 0, 255};
 
-    AddEnemy(700.0f, 640.0f, 100, 0.5);
-    // AddEnemy(800.0f, 700.0f, 100, 0);
-    AddHostage(200.0f, 600.0f, 100, 1.5);
+    AddEnemy(1419.0f, 2335.0f, 100, 0.5);
+    AddEnemy(670.0f, 1130.f, 100, 0.5);
+    AddEnemy(715.0f, 1995.f, 100, 0.5);
+    AddEnemy(2000.0f, 1673.f, 100, 0.5);
+    AddEnemy(1616.0f, 1188.f, 100, 0.5);
+    AddEnemy(2366.0f, 850.f, 100, 0.5);
+    AddHostage(1890.0f, 2500.0f, 100, 1.5);
     AddUI("white", 0, 0, 30, 700, 90, 110, 1);
     AddUI("HPamount", 0, 0, 30, 780, 100, 520, 1);
     AddUI("white", 0, 0, 50, 50, 50, 810, 1);
@@ -162,7 +166,7 @@ int frameTime;
 
 void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
     auto &enemy(manager.addEntity());
-    enemy.addComponent<TransformComponent>(srcX, srcY, 0.3);
+    enemy.addComponent<TransformComponent>(srcX, srcY, 0.6);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);
@@ -177,7 +181,7 @@ void Game::AddEnemy(float srcX, float srcY, int hp, float speed) {
 
 void Game::AddHostage(float srcX, float srcY, int hp, float speed) {
     auto &hostage(manager.addEntity());
-    hostage.addComponent<TransformComponent>(srcX, srcY, 0.3);
+    hostage.addComponent<TransformComponent>(srcX, srcY, 0.6);
     Animation pistol_idle = Animation("pistol_idle", 255, 218, 0, 20, 150);
     Animation pistol_fire = Animation("pistol_fire", 225, 218, 0, 3, 150);
     Animation pistol_reload = Animation("pistol_reload", 225, 218, 0, 15, 150);

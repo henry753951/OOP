@@ -23,6 +23,7 @@ class EnemyController : public Component {
     vector<Entity *> players;
     vector<Entity *> colliders;
     float distanceX, distanceY;
+    int Ftimer = 20;
 
    public:
     SDL_Texture *texture;
@@ -37,6 +38,7 @@ class EnemyController : public Component {
     float speed;
     float nowx, nowy;
     int offset;
+    bool visable;
 
     EnemyController(bool DoA, int hp, int m, float s) {
         DeadorAlive = DoA;
@@ -103,11 +105,16 @@ class EnemyController : public Component {
             if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;
+                sprite->visable = false;
             } else {
-                std::cout << "no Blocked" << std::endl;
+                sprite->visable = true;
                 sprite->angle = -10 + (atan2(distanceY, distanceX) * 180.0000) / M_PI;
-
-                fire(nowx, nowy);
+                // FIRE
+                Ftimer--;
+                if (Ftimer < 0) {
+                    fire(nowx, nowy);
+                    Ftimer = 20;
+                }
 
                 if (transform->velocity.y == 0 && transform->velocity.x == 0) {
                     sprite->Play("pistol_idle");

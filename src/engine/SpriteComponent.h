@@ -27,7 +27,7 @@ class SpriteComponent : public Component {
     std::string currentAnimName;
     SDL_Texture* texture;
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
-
+    bool visable = true;
     SpriteComponent() = default;
 
     SpriteComponent(std::vector<Animation> animationList, bool isAnimated) {
@@ -66,7 +66,8 @@ class SpriteComponent : public Component {
     }
 
     void draw() override {
-        TextureManager::Draw(texture, srcRect, destRect, spriteFlip, angle);
+        if (visable)
+            TextureManager::Draw(texture, srcRect, destRect, spriteFlip, angle);
     }
 
     void Play(std::string animName) {

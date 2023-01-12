@@ -33,14 +33,12 @@ class PlayerStatComponent : public Component {
     }
 
     void damaged(float damage) {
-        if (healthPoint <= 0) {
-            healthPoint = 0;
-        } else {
-            healthPoint -= damage;
-        }
+        healthPoint -= damage;
     }
 
     void update() override {
+        if (healthPoint <= 0)
+            healthPoint = 0;
         rect.w = healthPoint * 4.6;
     }
 
