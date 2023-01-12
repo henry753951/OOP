@@ -3,6 +3,7 @@
 #include "engine/Components.h"
 #include "engine/ECS/ECS.h"
 #include "engine/EnemyController.h"
+#include "engine/PlayerStatComponent.h"
 #include "engine/TextureManager.h"
 #include "engine/Vector2D.h"
 #include "header/Game.h"
@@ -62,9 +63,9 @@ class BulletComponent : public Component {
             }
         } else if (target == "player") {
             auto& players(manager.getGroup(Game::groupPlayers));
-            for (auto& e : players) {
-                if (Collision::AABB(e->getComponent<ColliderComponent>().collider, position) && e->getComponent<EnemyController>().DeadorAlive == true) {
-                    // e->getComponent<EnemyController>().damaged(30);
+            for (auto& p : players) {
+                if (Collision::AABB(p->getComponent<ColliderComponent>().collider, position) && p->getComponent<PlayerStatComponent>().DeadorAlive == true) {
+                    p->getComponent<PlayerStatComponent>().damaged(30);
                     std::cout << "hit" << std::endl;
                     delete this;
                     break;
