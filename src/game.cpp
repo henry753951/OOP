@@ -30,6 +30,7 @@ std::string GState = "menu";
 auto &player(manager.addEntity());
 auto &label(manager.addEntity());
 auto &headUI(manager.addEntity());
+auto &endUI(manager.addEntity());
 
 auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
@@ -134,6 +135,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("HP", "Assets/Texture/HP.png");
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
     assets->AddTexture("white", "Assets/Texture/white.png");
+    assets->AddTexture("gameover", "Assets/Texture/GAMEOVER.png");
     assets->AddTexture("head", "Assets/Texture/Head.png");
     assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
 
@@ -175,6 +177,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     AddLabels(50, 200, "", "Cubic", white);
     AddLabels(50, 400, "", "Cubic", white);
     headUI.addComponent<UIComponent>("head", 0, 0, 10, 10, 900, 1600, 1);
+    endUI.addComponent<UIComponent>("gameover", 0, 0, 10, 10, 900, 1600, 1);
+    endUI.getComponent<UIComponent>().visible = false;
 }
 
 Uint32 frameStart;
@@ -288,6 +292,8 @@ void Game::update() {
         if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
             headUI.getComponent<UIComponent>().visible = false;
         }
+        if(player.getComponent<PlayerStatComponent>().healthPoint <= 0)
+            endUI.getComponent<UIComponent>().visible = true;
 }
 
 void Game::render() {
@@ -317,6 +323,7 @@ void Game::render() {
             l->draw();
         }
         headUI.draw();
+        endUI.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
