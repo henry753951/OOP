@@ -31,6 +31,7 @@ auto &player(manager.addEntity());
 auto &label(manager.addEntity());
 auto &headUI(manager.addEntity());
 auto &endUI(manager.addEntity());
+auto &winUI(manager.addEntity());
 
 auto &tiles(manager.getGroup(Game::groupMap));
 auto &players(manager.getGroup(Game::groupPlayers));
@@ -137,6 +138,7 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("white", "Assets/Texture/white.png");
     assets->AddTexture("gameover", "Assets/Texture/GAMEOVER.png");
     assets->AddTexture("head", "Assets/Texture/Head.png");
+    assets->AddTexture("win", "Assets/Texture/win.png");
     assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
     assets->AddSound("fire", "Assets/Audio/gunshot.wav");
     assets->AddSound("reload", "Assets/Audio/reload.wav");
@@ -181,6 +183,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     headUI.addComponent<UIComponent>("head", 0, 0, 10, 10, 900, 1600, 1);
     endUI.addComponent<UIComponent>("gameover", 0, 0, 10, 10, 900, 1600, 1);
     endUI.getComponent<UIComponent>().visible = false;
+    winUI.addComponent<UIComponent>("win", 0, 0, 10, 10, 900, 1600, 1);
+    winUI.getComponent<UIComponent>().visible = false;
 }
 
 Uint32 frameStart;
@@ -269,7 +273,7 @@ void Game::update() {
     for (auto &c : colliders) {
         SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
         if (Collision::AABB(cCol, playerCol)) {
-            player.getComponent<TransformComponent>().position = playerPos;
+            // player.getComponent<TransformComponent>().position = playerPos;
         }
         for (auto &b : bullets) {
             Vector2D pos = (*b).getComponent<BulletComponent>().position;
@@ -300,6 +304,11 @@ void Game::update() {
     }
     if (player.getComponent<PlayerStatComponent>().healthPoint <= 0)
         endUI.getComponent<UIComponent>().visible = true;
+
+    if ((int)(hostages[0]->getComponent<TransformComponent>().position.y) < 300){
+        winUI.getComponent<UIComponent>().visible = true;
+        std::cout << "win" << std::endl;
+    }
 }
 
 void Game::render() {
@@ -330,6 +339,7 @@ void Game::render() {
     }
     headUI.draw();
     endUI.draw();
+    winUI.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {

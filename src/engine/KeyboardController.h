@@ -77,7 +77,7 @@ class KeyboardController : public Component {
                     break;
                 case SDLK_r:
                     if (clip < 15) {
-                        Mix_PlayChannel(2, Game::assets->GetSound("reload"), 0);
+                        // Mix_PlayChannel(2, Game::assets->GetSound("reload"), 0);
                         sprite->Play("pistol_reload");
                         timer2 = SDL_GetTicks();
                         clip = 15;

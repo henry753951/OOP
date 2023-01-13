@@ -47,7 +47,7 @@ class EnemyController : public Component {
         speed = s;
     }
     void fire(int x, int y, int f) {
-        Mix_PlayChannel(f, Game::assets->GetSound("fire"), 0);
+        //Mix_PlayChannel(f, Game::assets->GetSound("fire"), 0);
         int playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
         int playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 

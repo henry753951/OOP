@@ -60,6 +60,9 @@ public:
 
     void update() override
     {
+        if(srcRect.y <1500){
+            
+        }
         if (healthPoint <= 0 && DeadorAlive == true)
         {
             DeadorAlive = false;

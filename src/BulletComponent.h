@@ -38,8 +38,8 @@ class BulletComponent : public Component {
         destRect.w = destRect.h = 50 * 1;
         position.x = x;
         position.y = y;
-        vec.x = vecX * 10.0f;
-        vec.y = vecY * 10.0f;
+        vec.x = vecX * 50.0f;
+        vec.y = vecY * 50.0f;
         target = target_;
     }
 
@@ -55,7 +55,7 @@ class BulletComponent : public Component {
             auto& enemys(manager.getGroup(Game::groupEnemys));
             for (auto& e : enemys) {
                 if (Collision::AABB(e->getComponent<ColliderComponent>().collider, position) && e->getComponent<EnemyController>().DeadorAlive == true) {
-                    e->getComponent<EnemyController>().damaged(30);
+                    e->getComponent<EnemyController>().damaged(100);
                     std::cout << "hit" << std::endl;
                     delete this;
                     break;
@@ -65,7 +65,7 @@ class BulletComponent : public Component {
             auto& players(manager.getGroup(Game::groupPlayers));
             for (auto& p : players) {
                 if (Collision::AABB(p->getComponent<ColliderComponent>().collider, position) && p->getComponent<PlayerStatComponent>().DeadorAlive == true) {
-                    p->getComponent<PlayerStatComponent>().damaged(30);
+                    p->getComponent<PlayerStatComponent>().damaged(1);
                     std::cout << "hit" << std::endl;
                     delete this;
                     break;
