@@ -14,6 +14,7 @@ class UIComponent : public Component {
     SDL_Rect srcRect, destRect;
     Vector2D position;
     UIComponent() = default;
+    bool visible = true;
 
     ~UIComponent() {
         SDL_DestroyTexture(texture);
@@ -38,6 +39,7 @@ class UIComponent : public Component {
         
     }
     void draw() override {
-        TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
+        if(visible)
+            TextureManager::Draw(texture, srcRect, destRect, SDL_FLIP_NONE);
     }
 };

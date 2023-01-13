@@ -33,7 +33,6 @@ class Game {
     GameState _gameState;
 
    public:
-    std::string GameState = "inGame";
     SDL_Window* _window;
     static AssetManager* assets;
     static SDL_Renderer* _renderer;
