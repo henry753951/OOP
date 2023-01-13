@@ -46,7 +46,8 @@ class EnemyController : public Component {
         nowMode = m;
         speed = s;
     }
-    void fire(int x, int y) {
+    void fire(int x, int y, int f) {
+        Mix_PlayChannel(f, Game::assets->GetSound("fire"), 0);
         int playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
         int playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 
@@ -102,7 +103,7 @@ class EnemyController : public Component {
             std::stringstream str_;
             str_ << nowx << " , " << nowy;
             labels[4]->getComponent<UILabel>().SetLabelText(str_.str(), "Cubic");
-            if (!RayTrace::checkThrough(colliders, static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), static_cast<int>(nowx), static_cast<int>(nowy))) {
+            if (RayTrace::checkBlockThrough(colliders, static_cast<int>((transform->position.x + sprite->destRect.w / 2)), static_cast<int>((transform->position.y + sprite->destRect.h / 2)), static_cast<int>(nowx + sprite->destRect.w / 2), static_cast<int>(nowy + sprite->destRect.h / 2))) {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;
                 sprite->visable = false;
@@ -112,7 +113,7 @@ class EnemyController : public Component {
                 // FIRE
                 Ftimer--;
                 if (Ftimer < 0) {
-                    fire(nowx, nowy);
+                    fire(nowx, nowy, Ftimer % 5);
                     Ftimer = 20;
                 }
 

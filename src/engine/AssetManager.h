@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
 #include <map>
@@ -22,8 +23,12 @@ class AssetManager {
     void AddFont(std::string id, std::string path, int fontSize);
     TTF_Font* GetFont(std::string id);
 
+    void AddSound(std::string id, std::string path);
+    Mix_Chunk* GetSound(std::string id);
+
    private:
     Manager* manager;
     std::map<std::string, SDL_Texture*> textures;
     std::map<std::string, TTF_Font*> fonts;
+    std::map<std::string, Mix_Chunk*> sounds;
 };

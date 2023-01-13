@@ -19,3 +19,11 @@ void AssetManager::AddFont(std::string id, std::string path, int fontSize) {
 TTF_Font* AssetManager::GetFont(std::string id) {
     return fonts[id];
 }
+
+void AssetManager::AddSound(std::string id, std::string path) {
+    sounds.emplace(id, Mix_LoadWAV(path.c_str()));
+}
+
+Mix_Chunk* AssetManager::GetSound(std::string id) {
+    return sounds[id];
+}

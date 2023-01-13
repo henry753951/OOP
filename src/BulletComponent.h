@@ -38,8 +38,8 @@ class BulletComponent : public Component {
         destRect.w = destRect.h = 50 * 1;
         position.x = x;
         position.y = y;
-        vec.x = vecX * 50.0f;
-        vec.y = vecY * 50.0f;
+        vec.x = vecX * 10.0f;
+        vec.y = vecY * 10.0f;
         target = target_;
     }
 

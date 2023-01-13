@@ -133,6 +133,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     assets->AddTexture("HPamount", "Assets/Texture/HPamount.png");
     assets->AddTexture("white", "Assets/Texture/white.png");
     assets->AddFont("Cubic", "Assets/Font/Cubic_11_1.013_R.ttf", 50);
+    assets->AddSound("fire", "Assets/Audio/gunshot.wav");
+    assets->AddSound("reload", "Assets/Audio/reload.wav");
 
     map = new Map("terrain", 2, 32);
     map->LoadMap("Assets/Texture/ground.png", "Assets/1f.map", 50, 50);

@@ -4,6 +4,7 @@
 
 #include "../BulletComponent.h"
 #include "../header/Game.h"
+#include "AssetManager.h"
 #include "Components.h"
 #include "ECS/ECS.h"
 #include "SpriteComponent.h"
@@ -35,8 +36,9 @@ class KeyboardController : public Component {
         if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
             switch (Game::event.button.button) {
                 case SDL_BUTTON_LEFT:
-                    if(clip > 0 && SDL_GetTicks() - timer2 >= 900){
+                    if (clip > 0 && SDL_GetTicks() - timer2 >= 900) {
                         fire(mousePosX, mousePosY);
+
                         sprite->Play("pistol_fire");
                         timer = SDL_GetTicks();
                     }
@@ -47,7 +49,7 @@ class KeyboardController : public Component {
                     break;
             }
         }
-        if(SDL_GetTicks() - timer >= 90 && SDL_GetTicks() - timer2 >= 900){
+        if (SDL_GetTicks() - timer >= 90 && SDL_GetTicks() - timer2 >= 900) {
             if (transform->velocity.y == 0 && transform->velocity.x == 0) {
                 sprite->Play("pistol_idle");
             } else {
@@ -74,7 +76,8 @@ class KeyboardController : public Component {
                     sprite->speed = 150;
                     break;
                 case SDLK_r:
-                    if(clip < 15){
+                    if (clip < 15) {
+                        Mix_PlayChannel(2, Game::assets->GetSound("reload"), 0);
                         sprite->Play("pistol_reload");
                         timer2 = SDL_GetTicks();
                         clip = 15;
@@ -113,6 +116,7 @@ class KeyboardController : public Component {
 
     void fire(int x, int y) {
         clip--;
+        Mix_PlayChannel(clip % 5, Game::assets->GetSound("fire"), 0);
         double playerPositionX = *(&entity->getComponent<TransformComponent>().position.x) + (*(&entity->getComponent<SpriteComponent>().destRect.w) / 2);
         double playerPositionY = *(&entity->getComponent<TransformComponent>().position.y) + (*(&entity->getComponent<SpriteComponent>().destRect.h) / 2);
 
