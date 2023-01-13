@@ -95,14 +95,14 @@ class EnemyController : public Component {
                 // cout << distanceY << endl;
             }
             // 若不再玩家視線 則return visable = false
-            auto &labels(manager.getGroup(Game::groupLabels));
+            // auto &labels(manager.getGroup(Game::groupLabels));
 
-            std::stringstream str;
-            str << transform->position.x << " , " << transform->position.y;
-            labels[3]->getComponent<UILabel>().SetLabelText(str.str(), "Cubic");
-            std::stringstream str_;
-            str_ << nowx << " , " << nowy;
-            labels[4]->getComponent<UILabel>().SetLabelText(str_.str(), "Cubic");
+            // std::stringstream str;
+            // str << transform->position.x << " , " << transform->position.y;
+            // labels[3]->getComponent<UILabel>().SetLabelText(str.str(), "Cubic");
+            // std::stringstream str_;
+            // str_ << nowx << " , " << nowy;
+            // labels[4]->getComponent<UILabel>().SetLabelText(str_.str(), "Cubic");
             if (RayTrace::checkBlockThrough(colliders, static_cast<int>((transform->position.x + sprite->destRect.w / 2)), static_cast<int>((transform->position.y + sprite->destRect.h / 2)), static_cast<int>(nowx + sprite->destRect.w / 2), static_cast<int>(nowy + sprite->destRect.h / 2))) {
                 transform->velocity.x = 0;
                 transform->velocity.y = 0;

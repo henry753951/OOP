@@ -74,7 +74,7 @@ class BulletComponent : public Component {
         }
     }
     void draw() override {
-        SDL_SetRenderDrawColor(Game::_renderer, 252, 252, 3, 0xFF);
+        SDL_SetRenderDrawColor(Game::_renderer, 100, 100, 3, 0xFF);
         SDL_RenderDrawLine(Game::_renderer, destRect.x, destRect.y, destRect.x + vec.x * 2, destRect.y + vec.y * 2);
         SDL_SetRenderDrawColor(Game::_renderer, 0x00, 0x00, 0x00, 0x00);
     }

@@ -176,8 +176,8 @@ void Game::init(const char *title, int x, int y, int w, int h, Uint32 flags) {
     AddLabels(50, 715, "HP", "Cubic", black);
     AddLabels(1360, 780, "BULLETS", "Cubic", black);
     // debug
-    AddLabels(50, 200, "", "Cubic", white);
-    AddLabels(50, 400, "", "Cubic", white);
+    // AddLabels(50, 200, "", "Cubic", white);
+    // AddLabels(50, 400, "", "Cubic", white);
     headUI.addComponent<UIComponent>("head", 0, 0, 10, 10, 900, 1600, 1);
     endUI.addComponent<UIComponent>("gameover", 0, 0, 10, 10, 900, 1600, 1);
     endUI.getComponent<UIComponent>().visible = false;
@@ -255,77 +255,81 @@ void Game::handleEvents() {
 }
 
 void Game::update() {
-        SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
-        Vector2D playerPos = player.getComponent<TransformComponent>().position;
-        int clips = player.getComponent<KeyboardController>().clip;
+    SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+    Vector2D playerPos = player.getComponent<TransformComponent>().position;
+    int clips = player.getComponent<KeyboardController>().clip;
 
-        std::stringstream ss;
-        ss << clips << "/15";
-        labels[2]->getComponent<UILabel>().SetLabelText(ss.str(), "Cubic");
+    std::stringstream ss;
+    ss << clips << "/15";
+    labels[2]->getComponent<UILabel>().SetLabelText(ss.str(), "Cubic");
 
-        manager.refresh();
-        manager.update();
+    manager.refresh();
+    manager.update();
 
-        for (auto &c : colliders) {
-            SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
-            if (Collision::AABB(cCol, playerCol)) {
-                player.getComponent<TransformComponent>().position = playerPos;
-            }
-            for (auto &b : bullets) {
-                Vector2D pos = (*b).getComponent<BulletComponent>().position;
-                if (Collision::AABB(cCol, pos)) {
-                    b->getComponent<BulletComponent>().~BulletComponent();
-                }
+    for (auto &c : colliders) {
+        SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+        if (Collision::AABB(cCol, playerCol)) {
+            player.getComponent<TransformComponent>().position = playerPos;
+        }
+        for (auto &b : bullets) {
+            Vector2D pos = (*b).getComponent<BulletComponent>().position;
+            if (Collision::AABB(cCol, pos)) {
+                b->getComponent<BulletComponent>().~BulletComponent();
             }
         }
+    }
+    // for (int ch = 0; ch < 5; ch++) {
+    //     Mix_ChannelFinished([](int c) {
+    //         audioFinished(c); }
+    // }
 
-        camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - DM.w / 2 + 256);
-        camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - DM.h / 2 + 128);
+    camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - DM.w / 2 + 256);
+    camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - DM.h / 2 + 128);
 
-        if (camera.x < 0)
-            camera.x = 0;
-        if (camera.y < 0)
-            camera.y = 0;
-        if (camera.x > camera.w)
-            camera.x = camera.w;
-        if (camera.y > camera.h)
-            camera.y = camera.h;
+    if (camera.x < 0)
+        camera.x = 0;
+    if (camera.y < 0)
+        camera.y = 0;
+    if (camera.x > camera.w)
+        camera.x = camera.w;
+    if (camera.y > camera.h)
+        camera.y = camera.h;
 
-        if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
-            headUI.getComponent<UIComponent>().visible = false;
-        }
-        if(player.getComponent<PlayerStatComponent>().healthPoint <= 0)
-            endUI.getComponent<UIComponent>().visible = true;
+    if (Game::event.type == SDL_MOUSEBUTTONDOWN) {
+        headUI.getComponent<UIComponent>().visible = false;
+    }
+    if (player.getComponent<PlayerStatComponent>().healthPoint <= 0)
+        endUI.getComponent<UIComponent>().visible = true;
 }
 
 void Game::render() {
     SDL_RenderClear(_renderer);
-        for (auto &t : tiles) {
-            t->draw();
-        }
-        for (auto &C : colliders) {
-            C->draw();
-        }
-        for (auto &e : enemys) {
-            e->draw();
-        }
-        for (auto &h : hostages) {
-            h->draw();
-        }
-        for (auto &b : bullets) {
-            b->draw();
-        }
-        for (auto &p : players) {
-            p->draw();
-        }
-        for (auto &u : UIs) {
-            u->draw();
-        }
-        for (auto &l : labels) {
-            l->draw();
-        }
-        headUI.draw();
-        endUI.draw();
+    for (auto &t : tiles) {
+        t->draw();
+    }
+    for (auto &C : colliders) {
+        C->draw();
+    }
+    for (auto &e : enemys) {
+        e->draw();
+    }
+    for (auto &h : hostages) {
+        h->draw();
+    }
+    for (auto &b : bullets) {
+        b->draw();
+    }
+    for (auto &p : players) {
+        p->draw();
+    }
+    for (auto &u : UIs) {
+        u->draw();
+    }
+    for (auto &l : labels) {
+        l->draw();
+    }
+    headUI.draw();
+    endUI.draw();
     SDL_RenderPresent(_renderer);
 }
 void Game::quit() {
