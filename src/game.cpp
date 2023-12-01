@@ -273,7 +273,7 @@ void Game::update() {
     for (auto &c : colliders) {
         SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
         if (Collision::AABB(cCol, playerCol)) {
-            // player.getComponent<TransformComponent>().position = playerPos;
+            player.getComponent<TransformComponent>().position = playerPos;
         }
         for (auto &b : bullets) {
             Vector2D pos = (*b).getComponent<BulletComponent>().position;
